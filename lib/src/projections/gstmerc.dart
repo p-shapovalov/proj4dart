@@ -42,8 +42,8 @@ class GaussSchreiberTransverseMercatorProjection extends Projection {
 
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
 
     var L = rs * (lon - lc!);
     var Ls = cp + (rs * utils.latiso(e, lat, math.sin(lat)));
@@ -56,8 +56,8 @@ class GaussSchreiberTransverseMercatorProjection extends Projection {
 
   @override
   Point inverse(Point p) {
-    var x = p.x!;
-    var y = p.y!;
+    var x = p.x;
+    var y = p.y;
 
     var L = math.atan(utils.sinh((x - xs!) / n2) / math.cos((y - ys) / n2));
     var lat1 = math.asin(math.sin((y - ys) / n2) / utils.cosh((x - xs!) / n2));

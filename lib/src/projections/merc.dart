@@ -51,10 +51,10 @@ class PseudoMercatorProjection extends Projection {
   @override
   Point? forward(Point? p) {
     var lon = p!.x;
-    var lat = p.y!;
+    var lat = p.y;
     if (lat * consts.R2D > 90 &&
         lat * consts.R2D < -90 &&
-        lon! * consts.R2D > 180 &&
+        lon* consts.R2D > 180 &&
         lon * consts.R2D < -180) {
       return null;
     }
@@ -63,12 +63,12 @@ class PseudoMercatorProjection extends Projection {
       return null;
     } else {
       if (sphere != null && sphere!) {
-        x = x0! + a! * k0! * utils.adjust_lon(lon! - long0);
+        x = x0! + a! * k0! * utils.adjust_lon(lon- long0);
         y = y0! + a! * k0! * math.log(math.tan(consts.FORTPI + 0.5 * lat));
       } else {
         var sinphi = math.sin(lat);
         var ts = utils.tsfnz(e!, lat, sinphi);
-        x = x0! + a! * k0! * utils.adjust_lon(lon! - long0);
+        x = x0! + a! * k0! * utils.adjust_lon(lon- long0);
         y = y0! - a! * k0! * math.log(ts);
       }
       p.x = x;
@@ -79,8 +79,8 @@ class PseudoMercatorProjection extends Projection {
 
   @override
   Point? inverse(Point p) {
-    var x = p.x! - x0!;
-    var y = p.y! - y0!;
+    var x = p.x- x0!;
+    var y = p.y- y0!;
     double lon, lat;
     if (sphere != null && sphere!) {
       lat = consts.HALF_PI - 2 * math.atan(math.exp(-y / (a! * k0!)));

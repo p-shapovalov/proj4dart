@@ -36,8 +36,8 @@ class PolyconicProjection extends Projection {
 
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
     double x, y, el;
     var dlon = utils.adjust_lon(lon - long0);
     el = dlon * math.sin(lat);
@@ -75,8 +75,8 @@ class PolyconicProjection extends Projection {
     double phi, dphi;
     lat = double.nan; // fix js behavior
 
-    x = p.x! - x0!;
-    y = p.y! - y0!;
+    x = p.x- x0!;
+    y = p.y- y0!;
 
     if (sphere != null && sphere!) {
       if ((y + a! * lat0!).abs() <= consts.EPSLN) {

@@ -27,8 +27,8 @@ class VanDerGrintenProjection extends Projection {
 
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
 
     var dlon = utils.adjust_lon(lon - long0!);
     var x, y;
@@ -98,8 +98,8 @@ class VanDerGrintenProjection extends Projection {
     p.x -= x0!;
     p.y -= y0!;
     con = math.pi * R!;
-    xx = p.x! / con;
-    yy = p.y! / con;
+    xx = p.x/ con;
+    yy = p.y/ con;
     xys = xx * xx + yy * yy;
     c1 = -(yy.abs()) * (1 + xys);
     c2 = c1 - 2 * yy * yy + xx * xx;
@@ -117,7 +117,7 @@ class VanDerGrintenProjection extends Projection {
       }
     }
     th1 = math.acos(con) / 3;
-    if (p.y! >= 0) {
+    if (p.y>= 0) {
       lat = (-m1 * math.cos(th1 + math.pi / 3) - c2 / 3 / c3) * math.pi;
     } else {
       lat = -(-m1 * math.cos(th1 + math.pi / 3) - c2 / 3 / c3) * math.pi;

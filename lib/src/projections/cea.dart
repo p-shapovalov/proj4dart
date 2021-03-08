@@ -34,15 +34,15 @@ class CentralCylindricalProjection extends Projection {
   /// Cylindrical Equal Area forward equations--mapping lat,long to x,y
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
+    var lon = p!.x;
     var lat = p.y;
     var x, y;
     var dlon = utils.adjust_lon(lon - long0);
     if (sphere != null && sphere!) {
       x = x0! + a! * dlon * math.cos(lat_ts!);
-      y = y0! + a! * math.sin(lat!) / math.cos(lat_ts!);
+      y = y0! + a! * math.sin(lat) / math.cos(lat_ts!);
     } else {
-      var qs = utils.qsfnz(e!, math.sin(lat!));
+      var qs = utils.qsfnz(e!, math.sin(lat));
       x = x0! + a! * k0! * dlon;
       y = y0! + a! * qs * 0.5 / k0!;
     }
@@ -60,11 +60,11 @@ class CentralCylindricalProjection extends Projection {
     var lon, lat;
 
     if (sphere != null && sphere!) {
-      lon = utils.adjust_lon(long0 + (p.x! / a!) / math.cos(lat_ts!));
-      lat = math.asin((p.y! / a!) * math.cos(lat_ts!));
+      lon = utils.adjust_lon(long0 + (p.x/ a!) / math.cos(lat_ts!));
+      lat = math.asin((p.y/ a!) * math.cos(lat_ts!));
     } else {
-      lat = utils.iqsfnz(e!, 2 * p.y! * k0! / a!);
-      lon = utils.adjust_lon(long0 + p.x! / (a! * k0!));
+      lat = utils.iqsfnz(e!, 2 * p.y* k0! / a!);
+      lon = utils.adjust_lon(long0 + p.x/ (a! * k0!));
     }
 
     p.x = lon;

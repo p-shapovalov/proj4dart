@@ -70,7 +70,7 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
     // described in [LK12].
     if (es != 0) {
       // if (P->es != 0) {
-      lat = math.atan(one_minus_f_squared * math.tan(p.y!));
+      lat = math.atan(one_minus_f_squared * math.tan(p.y));
     } else {
       lat = p.y;
     }
@@ -82,8 +82,8 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
     // unit sphere cartesian coordinates as an intermediate step.
     lon = p.x; //lon = lp['lam'];
     if (face == faces.TOP) {
-      phi = consts.HALF_PI - lat!;
-      if (lon! >= consts.FORTPI && lon <= consts.HALF_PI + consts.FORTPI) {
+      phi = consts.HALF_PI - lat;
+      if (lon>= consts.FORTPI && lon <= consts.HALF_PI + consts.FORTPI) {
         area['value'] = areas.AREA_0;
         theta = lon - consts.HALF_PI;
       } else if (lon > consts.HALF_PI + consts.FORTPI ||
@@ -99,8 +99,8 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
         theta = lon;
       }
     } else if (face == faces.BOTTOM) {
-      phi = consts.HALF_PI + lat!;
-      if (lon! >= consts.FORTPI && lon <= consts.HALF_PI + consts.FORTPI) {
+      phi = consts.HALF_PI + lat;
+      if (lon>= consts.FORTPI && lon <= consts.HALF_PI + consts.FORTPI) {
         area['value'] = areas.AREA_0;
         theta = -lon + consts.HALF_PI;
       } else if (lon < consts.FORTPI && lon >= -consts.FORTPI) {
@@ -120,15 +120,15 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
       double sinlon, coslon;
 
       if (face == faces.RIGHT) {
-        lon = _qsc_shift_lon_origin(lon!, consts.HALF_PI);
+        lon = _qsc_shift_lon_origin(lon, consts.HALF_PI);
       } else if (face == faces.BACK) {
-        lon = _qsc_shift_lon_origin(lon!, consts.SPI);
+        lon = _qsc_shift_lon_origin(lon, consts.SPI);
       } else if (face == faces.LEFT) {
-        lon = _qsc_shift_lon_origin(lon!, -consts.HALF_PI);
+        lon = _qsc_shift_lon_origin(lon, -consts.HALF_PI);
       }
-      sinlat = math.sin(lat!);
+      sinlat = math.sin(lat);
       coslat = math.cos(lat);
-      sinlon = math.sin(lon!);
+      sinlon = math.sin(lon);
       coslon = math.cos(lon);
       q = coslat * coslon;
       r = coslat * sinlon;
@@ -176,8 +176,8 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
     // Now compute x, y from mu and nu
     xy.x = t * math.cos(mu);
     xy.y = t * math.sin(mu);
-    xy.x = xy.x! * a! + x0;
-    xy.y = xy.y! * a! + y0;
+    xy.x = xy.x* a! + x0;
+    xy.y = xy.y* a! + y0;
 
     p.x = xy.x;
     p.y = xy.y;
@@ -193,19 +193,19 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
     var area = {'value': 0};
 
     // de-offset
-    p.x = (p.x! - x0) / a!;
-    p.y = (p.y! - y0) / a!;
+    p.x = (p.x- x0) / a!;
+    p.y = (p.y- y0) / a!;
 
     // Convert the input x, y to the mu and nu angles as used by QSC.
     // This depends on the area of the cube face.
-    nu = math.atan(math.sqrt(p.x! * p.x! + p.y! * p.y!));
-    mu = math.atan2(p.y!, p.x!);
-    if (p.x! >= 0.0 && p.x! >= p.y!.abs()) {
+    nu = math.atan(math.sqrt(p.x* p.x+ p.y* p.y));
+    mu = math.atan2(p.y, p.x);
+    if (p.x>= 0.0 && p.x>= p.y.abs()) {
       area['value'] = areas.AREA_0;
-    } else if (p.y! >= 0.0 && p.y! >= p.x!.abs()) {
+    } else if (p.y>= 0.0 && p.y>= p.x.abs()) {
       area['value'] = areas.AREA_1;
       mu -= consts.HALF_PI;
-    } else if (p.x! < 0.0 && -p.x! >= p.y!.abs()) {
+    } else if (p.x< 0.0 && -p.x>= p.y.abs()) {
       area['value'] = areas.AREA_2;
       mu = (mu < 0.0 ? mu + consts.SPI : mu - consts.SPI);
     } else {

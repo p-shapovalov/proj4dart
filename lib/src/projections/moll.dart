@@ -21,8 +21,8 @@ class MollweideProjection extends Projection {
 
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
 
     var delta_lon = utils.adjust_lon(lon - long0);
     var theta = lat;
@@ -58,7 +58,7 @@ class MollweideProjection extends Projection {
     double arg;
     p.x -= x0!;
     p.y -= y0!;
-    arg = p.y! / (1.4142135623731 * a!);
+    arg = p.y/ (1.4142135623731 * a!);
 
     // Because of division by zero problems, 'arg' can not be 1.  Therefore
     // a number very close to one is used instead.
@@ -67,7 +67,7 @@ class MollweideProjection extends Projection {
     }
     theta = math.asin(arg);
     var lon = utils
-        .adjust_lon(long0 + (p.x! / (0.900316316158 * a! * math.cos(theta))));
+        .adjust_lon(long0 + (p.x/ (0.900316316158 * a! * math.cos(theta))));
     if (lon < (-math.pi)) {
       lon = -math.pi;
     }

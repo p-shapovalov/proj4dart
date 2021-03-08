@@ -76,8 +76,8 @@ class StereographicSouthProjection extends Projection {
 
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
     var sinlat = math.sin(lat);
     var coslat = math.cos(lat);
     var A, X, sinX, cosX, ts, rh;
@@ -135,7 +135,7 @@ class StereographicSouthProjection extends Projection {
     p.x -= x0!;
     p.y -= y0!;
     double? lon, lat, ts, ce, Chi;
-    var rh = math.sqrt(p.x! * p.x! + p.y! * p.y!);
+    var rh = math.sqrt(p.x* p.x+ p.y* p.y);
     if (sphere != null && sphere!) {
       var c = 2 * math.atan(rh / (2 * a! * k0!));
       lon = long0;
@@ -146,17 +146,17 @@ class StereographicSouthProjection extends Projection {
         return p;
       }
       lat =
-          math.asin(math.cos(c) * sinlat0 + p.y! * math.sin(c) * coslat0 / rh);
+          math.asin(math.cos(c) * sinlat0 + p.y* math.sin(c) * coslat0 / rh);
       if (coslat0.abs() < consts.EPSLN) {
         if (lat0! > 0) {
-          lon = utils.adjust_lon(long0 + math.atan2(p.x!, -1 * p.y!));
+          lon = utils.adjust_lon(long0 + math.atan2(p.x, -1 * p.y));
         } else {
-          lon = utils.adjust_lon(long0 + math.atan2(p.x!, p.y!));
+          lon = utils.adjust_lon(long0 + math.atan2(p.x, p.y));
         }
       } else {
         lon = utils.adjust_lon(long0 +
-            math.atan2(p.x! * math.sin(c),
-                rh * coslat0 * math.cos(c) - p.y! * sinlat0 * math.sin(c)));
+            math.atan2(p.x* math.sin(c),
+                rh * coslat0 * math.cos(c) - p.y* sinlat0 * math.sin(c)));
       }
       p.x = lon;
       p.y = lat;
@@ -175,7 +175,7 @@ class StereographicSouthProjection extends Projection {
         p.y *= con;
         ts = rh * cons / (2 * a! * k0!);
         lat = con * utils.phi2z(e!, ts);
-        lon = con * utils.adjust_lon(con * long0 + math.atan2(p.x!, -1 * p.y!));
+        lon = con * utils.adjust_lon(con * long0 + math.atan2(p.x, -1 * p.y));
       } else {
         ce = 2 * math.atan(rh * cosX0 / (2 * a! * k0! * ms1));
         lon = long0;
@@ -183,10 +183,10 @@ class StereographicSouthProjection extends Projection {
           Chi = X0;
         } else {
           Chi = math
-              .asin(math.cos(ce) * sinX0 + p.y! * math.sin(ce) * cosX0 / rh);
+              .asin(math.cos(ce) * sinX0 + p.y* math.sin(ce) * cosX0 / rh);
           lon = utils.adjust_lon(long0 +
-              math.atan2(p.x! * math.sin(ce),
-                  rh * cosX0 * math.cos(ce) - p.y! * sinX0 * math.sin(ce)));
+              math.atan2(p.x* math.sin(ce),
+                  rh * cosX0 * math.cos(ce) - p.y* sinX0 * math.sin(ce)));
         }
         lat = -1 * utils.phi2z(e!, math.tan(0.5 * (consts.HALF_PI + Chi!)));
       }

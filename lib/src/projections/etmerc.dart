@@ -156,8 +156,8 @@ class ExtendedTransverseMercatorProjection extends Projection {
 
   @override
   Point? forward(Point? p) {
-    var Ce = utils.adjust_lon(p!.x! - long0!);
-    var Cn = p.y!;
+    var Ce = utils.adjust_lon(p!.x- long0!);
+    var Cn = p.y;
 
     Cn = utils.gatg(cbg, Cn);
     var sin_Cn = math.sin(Cn);
@@ -193,8 +193,8 @@ class ExtendedTransverseMercatorProjection extends Projection {
 
   @override
   Point inverse(Point p) {
-    var Ce = (p.x! - x0!) * (1 / a!);
-    var Cn = (p.y! - y0!) * (1 / a!);
+    var Ce = (p.x- x0!) * (1 / a!);
+    var Cn = (p.y- y0!) * (1 / a!);
 
     Cn = (Cn - Zb) / Qn;
     Ce = Ce / Qn;

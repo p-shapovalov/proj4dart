@@ -48,16 +48,16 @@ class SwissObliqueMercatorProjection extends Projection {
 
   @override
   Point? forward(Point? p) {
-    var Sa1 = math.log(math.tan(math.pi / 4 - p!.y! / 2));
+    var Sa1 = math.log(math.tan(math.pi / 4 - p!.y/ 2));
     var Sa2 =
-        e! / 2 * math.log((1 + e! * math.sin(p.y!)) / (1 - e! * math.sin(p.y!)));
+        e! / 2 * math.log((1 + e! * math.sin(p.y)) / (1 - e! * math.sin(p.y)));
     var S = -alpha * (Sa1 + Sa2) + K;
 
     // spheric latitude
     var b = 2 * (math.atan(math.exp(S)) - math.pi / 4);
 
     // spheric longitude
-    var I = alpha * (p.x! - lambda0);
+    var I = alpha * (p.x- lambda0);
 
     // psoeudo equatorial rotation
     var rotI = math.atan(math.sin(I) /
@@ -73,8 +73,8 @@ class SwissObliqueMercatorProjection extends Projection {
 
   @override
   Point inverse(Point p) {
-    var Y = p.x! - x0!;
-    var X = p.y! - y0!;
+    var Y = p.x- x0!;
+    var X = p.y- y0!;
 
     var rotI = Y / R;
     var rotB = 2 * (math.atan(math.exp(X / R)) - math.pi / 4);

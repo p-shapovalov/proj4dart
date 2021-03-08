@@ -242,21 +242,21 @@ void _checkProjectAndUnProjectResults(
       final forwardResult = wgs!.transform(custom, point);
 
       if (value.forwardResult.x != forwardResult.x) {
-        if (value.forwardResult.x!.isNaN) {
+        if (value.forwardResult.x.isNaN) {
           expect(forwardResult.x, isNaN, reason: key);
         } else {
           expect(forwardResult.x,
-              closeTo(value.forwardResult.x!, closeToHelper!.worstForwardX!),
+              closeTo(value.forwardResult.x, closeToHelper!.worstForwardX!),
               reason: key);
         }
       }
 
       if (value.forwardResult.y != forwardResult.y) {
-        if (value.forwardResult.y!.isNaN) {
+        if (value.forwardResult.y.isNaN) {
           expect(forwardResult.y, isNaN, reason: key);
         } else {
           expect(forwardResult.y,
-              closeTo(value.forwardResult.y!, closeToHelper!.worstForwardY!),
+              closeTo(value.forwardResult.y, closeToHelper!.worstForwardY!),
               reason: key);
         }
       }
@@ -276,21 +276,21 @@ void _checkProjectAndUnProjectResults(
       final inverseResult = custom.transform(wgs, value.forwardResult);
 
       if (value.inverseResult!.x != inverseResult.x) {
-        if (value.inverseResult!.x!.isNaN) {
+        if (value.inverseResult!.x.isNaN) {
           expect(inverseResult.x, isNaN, reason: key);
         } else {
           expect(inverseResult.x,
-              closeTo(value.inverseResult!.x!, closeToHelper!.worstInverseX!),
+              closeTo(value.inverseResult!.x, closeToHelper!.worstInverseX!),
               reason: key);
         }
       }
 
       if (value.inverseResult!.y != inverseResult.y) {
-        if (value.inverseResult!.y!.isNaN) {
+        if (value.inverseResult!.y.isNaN) {
           expect(inverseResult.y, isNaN, reason: key);
         } else {
           expect(inverseResult.y,
-              closeTo(value.inverseResult!.y!, closeToHelper!.worstInverseY!),
+              closeTo(value.inverseResult!.y, closeToHelper!.worstInverseY!),
               reason: key);
         }
       }
@@ -316,21 +316,21 @@ Map<Type, CloseToHelper> _getCloseToHelpers(Map<String, String> defs,
       currClose.testedAgainst++;
 
       final forwardResult = wgs!.transform(custom, point);
-      if (value.forwardResult.x!.isFinite) {
-        currClose.putForwardX((forwardResult.x! - value.forwardResult.x!).abs());
+      if (value.forwardResult.x.isFinite) {
+        currClose.putForwardX((forwardResult.x- value.forwardResult.x).abs());
       }
 
-      if (value.forwardResult.y!.isFinite) {
-        currClose.putForwardY((forwardResult.y! - value.forwardResult.y!).abs());
+      if (value.forwardResult.y.isFinite) {
+        currClose.putForwardY((forwardResult.y- value.forwardResult.y).abs());
       }
 
       final inverseResult = custom.transform(wgs, value.forwardResult);
-      if (value.inverseResult!.x!.isFinite) {
-        currClose.putInverseX((inverseResult.x! - value.inverseResult!.x!).abs());
+      if (value.inverseResult!.x.isFinite) {
+        currClose.putInverseX((inverseResult.x- value.inverseResult!.x).abs());
       }
 
-      if (value.inverseResult!.y!.isFinite) {
-        currClose.putInverseY((inverseResult.y! - value.inverseResult!.y!).abs());
+      if (value.inverseResult!.y.isFinite) {
+        currClose.putInverseY((inverseResult.y- value.inverseResult!.y).abs());
       }
     }
   });

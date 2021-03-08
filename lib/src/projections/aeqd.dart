@@ -31,10 +31,10 @@ class AzimuthalEquidistantProjection extends Projection {
 
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
+    var lon = p!.x;
     var lat = p.y;
-    var sinphi = math.sin(p.y!);
-    var cosphi = math.cos(p.y!);
+    var sinphi = math.sin(p.y);
+    var cosphi = math.cos(p.y);
     var dlon = utils.adjust_lon(lon - long0!);
     var e0,
         e1,
@@ -62,12 +62,12 @@ class AzimuthalEquidistantProjection extends Projection {
     if (sphere != null && sphere!) {
       if ((sin_p12 - 1).abs() <= consts.EPSLN) {
         //North Pole case
-        p.x = x0! + a! * (consts.HALF_PI - lat!) * math.sin(dlon);
+        p.x = x0! + a! * (consts.HALF_PI - lat) * math.sin(dlon);
         p.y = y0! - a! * (consts.HALF_PI - lat) * math.cos(dlon);
         return p;
       } else if ((sin_p12 + 1).abs() <= consts.EPSLN) {
         //South Pole case
-        p.x = x0! + a! * (consts.HALF_PI + lat!) * math.sin(dlon);
+        p.x = x0! + a! * (consts.HALF_PI + lat) * math.sin(dlon);
         p.y = y0! + a! * (consts.HALF_PI + lat) * math.cos(dlon);
         return p;
       } else {
@@ -88,14 +88,14 @@ class AzimuthalEquidistantProjection extends Projection {
       if ((sin_p12 - 1).abs() <= consts.EPSLN) {
         //North Pole case
         Mlp = a! * utils.mlfn(e0, e1, e2, e3, consts.HALF_PI);
-        Ml = a! * utils.mlfn(e0, e1, e2, e3, lat!);
+        Ml = a! * utils.mlfn(e0, e1, e2, e3, lat);
         p.x = x0! + (Mlp - Ml) * math.sin(dlon);
         p.y = y0! - (Mlp - Ml) * math.cos(dlon);
         return p;
       } else if ((sin_p12 + 1).abs() <= consts.EPSLN) {
         //South Pole case
         Mlp = a! * utils.mlfn(e0, e1, e2, e3, consts.HALF_PI);
-        Ml = a! * utils.mlfn(e0, e1, e2, e3, lat!);
+        Ml = a! * utils.mlfn(e0, e1, e2, e3, lat);
         p.x = x0! + (Mlp + Ml) * math.sin(dlon);
         p.y = y0! + (Mlp + Ml) * math.cos(dlon);
         return p;
@@ -164,7 +164,7 @@ class AzimuthalEquidistantProjection extends Projection {
         Ee,
         F;
     if (sphere != null && sphere!) {
-      rh = math.sqrt(p.x! * p.x! + p.y! * p.y!);
+      rh = math.sqrt(p.x* p.x+ p.y* p.y);
       if (rh > (2 * consts.HALF_PI * a!)) {
         //...reportError("aeqdInvDataError");
         return p;
@@ -178,13 +178,13 @@ class AzimuthalEquidistantProjection extends Projection {
       if (rh.abs() <= consts.EPSLN) {
         lat = lat0;
       } else {
-        lat = utils.asinz(cosz * sin_p12 + (p.y! * sinz * cos_p12) / rh);
+        lat = utils.asinz(cosz * sin_p12 + (p.y* sinz * cos_p12) / rh);
         con = lat0!.abs() - consts.HALF_PI;
         if (con.abs() <= consts.EPSLN) {
           if (lat0! >= 0) {
-            lon = utils.adjust_lon(long0! + math.atan2(p.x!, -p.y!));
+            lon = utils.adjust_lon(long0! + math.atan2(p.x, -p.y));
           } else {
-            lon = utils.adjust_lon(long0! - math.atan2(-p.x!, p.y!));
+            lon = utils.adjust_lon(long0! - math.atan2(-p.x, p.y));
           }
         } else {
           //   con = cosz - sin_p12 * math.sin(lat);
@@ -196,7 +196,7 @@ class AzimuthalEquidistantProjection extends Projection {
           // }
           lon = utils.adjust_lon(long0! +
               math.atan2(
-                  p.x! * sinz, rh * cos_p12 * cosz - p.y! * sin_p12 * sinz));
+                  p.x* sinz, rh * cos_p12 * cosz - p.y* sin_p12 * sinz));
         }
       }
 
@@ -211,28 +211,28 @@ class AzimuthalEquidistantProjection extends Projection {
       if ((sin_p12 - 1).abs() <= consts.EPSLN) {
         //North pole case
         Mlp = a! * utils.mlfn(e0, e1, e2, e3, consts.HALF_PI);
-        rh = math.sqrt(p.x! * p.x! + p.y! * p.y!);
+        rh = math.sqrt(p.x* p.x+ p.y* p.y);
         M = Mlp - rh;
         lat = utils.imlfn(M / a, e0, e1, e2, e3);
-        lon = utils.adjust_lon(long0! + math.atan2(p.x!, -1 * p.y!));
+        lon = utils.adjust_lon(long0! + math.atan2(p.x, -1 * p.y));
         p.x = lon;
         p.y = lat;
         return p;
       } else if ((sin_p12 + 1).abs() <= consts.EPSLN) {
         //South pole case
         Mlp = a! * utils.mlfn(e0, e1, e2, e3, consts.HALF_PI);
-        rh = math.sqrt(p.x! * p.x! + p.y! * p.y!);
+        rh = math.sqrt(p.x* p.x+ p.y* p.y);
         M = rh - Mlp;
 
         lat = utils.imlfn(M / a, e0, e1, e2, e3);
-        lon = utils.adjust_lon(long0! + math.atan2(p.x!, p.y!));
+        lon = utils.adjust_lon(long0! + math.atan2(p.x, p.y));
         p.x = lon;
         p.y = lat;
         return p;
       } else {
         //default case
-        rh = math.sqrt(p.x! * p.x! + p.y! * p.y!);
-        Az = math.atan2(p.x!, p.y!);
+        rh = math.sqrt(p.x* p.x+ p.y* p.y);
+        Az = math.atan2(p.x, p.y);
         N1 = utils.gN(a!, e!, sin_p12);
         cosAz = math.cos(Az);
         tmp = e! * cos_p12 * cosAz;

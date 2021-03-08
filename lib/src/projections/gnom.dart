@@ -41,8 +41,8 @@ class GnomicProjection extends Projection {
     double ksp; // scale factor
     double g;
     double x, y;
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
     dlon = utils.adjust_lon(lon - long0);
     sinphi = math.sin(lat);
     cosphi = math.cos(lat);
@@ -74,20 +74,20 @@ class GnomicProjection extends Projection {
     double c;
     double? lon, lat;
 
-    p.x = (p.x! - x0!) / a!;
-    p.y = (p.y! - y0!) / a!;
+    p.x = (p.x- x0!) / a!;
+    p.y = (p.y- y0!) / a!;
 
     p.x /= k0!;
     p.y /= k0!;
 
-    if (!(rh = math.sqrt(p.x! * p.x! + p.y! * p.y!)).isNaN) {
+    if (!(rh = math.sqrt(p.x* p.x+ p.y* p.y)).isNaN) {
       c = math.atan2(rh, rc);
       sinc = math.sin(c);
       cosc = math.cos(c);
 
-      lat = utils.asinz(cosc * sin_p14 + (p.y! * sinc * cos_p14) / rh);
+      lat = utils.asinz(cosc * sin_p14 + (p.y* sinc * cos_p14) / rh);
       lon =
-          math.atan2(p.x! * sinc, rh * cos_p14 * cosc - p.y! * sin_p14 * sinc);
+          math.atan2(p.x* sinc, rh * cos_p14 * cosc - p.y* sin_p14 * sinc);
       lon = utils.adjust_lon(long0 + lon);
     } else {
       lat = phic0;

@@ -74,9 +74,9 @@ class RobinsonProjection extends Projection {
 
   @override
   Point forward(Point? ll) {
-    var lon = utils.adjust_lon(ll!.x! - long0);
+    var lon = utils.adjust_lon(ll!.x- long0);
 
-    var dphi = ll.y!.abs();
+    var dphi = ll.y.abs();
     var i = (dphi * C1).floor();
     if (i < 0) {
       i = 0;
@@ -86,36 +86,36 @@ class RobinsonProjection extends Projection {
     dphi = consts.R2D * (dphi - RC1 * i);
     var xy = Point(
         x: _poly3_val(COEFS_X[i], dphi) * lon, y: _poly3_val(COEFS_Y[i], dphi));
-    if (ll.y! < 0) {
-      xy.y = -xy.y!;
+    if (ll.y< 0) {
+      xy.y = -xy.y;
     }
 
-    xy.x = xy.x! * a! * FXC + x0;
-    xy.y = xy.y! * a! * FYC + y0;
+    xy.x = xy.x* a! * FXC + x0;
+    xy.y = xy.y* a! * FYC + y0;
     return xy;
   }
 
   @override
   Point inverse(Point xy) {
     var ll =
-        Point(x: (xy.x! - x0) / (a! * FXC), y: (xy.y! - y0).abs() / (a! * FYC));
+        Point(x: (xy.x- x0) / (a! * FXC), y: (xy.y- y0).abs() / (a! * FYC));
 
-    if (ll.y! >= 1) {
+    if (ll.y>= 1) {
       // pathologic case
       ll.x /= COEFS_X[NODES][0];
-      ll.y = xy.y! < 0 ? -consts.HALF_PI : consts.HALF_PI;
+      ll.y = xy.y< 0 ? -consts.HALF_PI : consts.HALF_PI;
     } else {
       // find table interval
-      var i = (ll.y! * NODES).floor();
+      var i = (ll.y* NODES).floor();
       if (i < 0) {
         i = 0;
       } else if (i >= NODES) {
         i = NODES - 1;
       }
       for (;;) {
-        if (COEFS_Y[i][0] > ll.y!) {
+        if (COEFS_Y[i][0] > ll.y) {
           --i;
-        } else if (COEFS_Y[i + 1][0] <= ll.y!) {
+        } else if (COEFS_Y[i + 1][0] <= ll.y) {
           ++i;
         } else {
           break;
@@ -123,22 +123,22 @@ class RobinsonProjection extends Projection {
       }
       // linear interpolation in 5 degree interval
       var coefs = COEFS_Y[i];
-      var t = 5 * (ll.y! - coefs[0]) / (COEFS_Y[i + 1][0] - coefs[0]);
+      var t = 5 * (ll.y- coefs[0]) / (COEFS_Y[i + 1][0] - coefs[0]);
       // find t so that poly3_val(coefs, t) = ll.y
       t = _newton_rapshon(
-          (x) => (_poly3_val(coefs, x) - ll.y!) / _poly3_der(coefs, x),
+          (x) => (_poly3_val(coefs, x) - ll.y) / _poly3_der(coefs, x),
           t,
           consts.EPSLN,
           100);
 
       ll.x /= _poly3_val(COEFS_X[i], t);
       ll.y = (5 * i + t) * consts.D2R;
-      if (xy.y! < 0) {
-        ll.y = -ll.y!;
+      if (xy.y< 0) {
+        ll.y = -ll.y;
       }
     }
 
-    ll.x = utils.adjust_lon(ll.x! + long0);
+    ll.x = utils.adjust_lon(ll.x+ long0);
     return ll;
   }
 

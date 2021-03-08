@@ -35,7 +35,7 @@ class EquidistantConicProjection extends Projection {
     if ((lat1 + lat2).abs() < consts.EPSLN) {
       return;
     }
-    lat2 = lat2 ?? lat1;
+    lat2 = lat2;
     var temp = b! / a!;
     var es = 1 - math.pow(temp, 2);
     e = math.sqrt(es);
@@ -67,14 +67,14 @@ class EquidistantConicProjection extends Projection {
   /// Equidistant Conic forward equations--mapping lat,long to x,y
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
+    var lon = p!.x;
     var lat = p.y;
     var rh1;
 
     if (sphere != null && sphere!) {
-      rh1 = a! * (g - lat!);
+      rh1 = a! * (g - lat);
     } else {
-      var ml = utils.mlfn(e0, e1!, e2!, e3!, lat!);
+      var ml = utils.mlfn(e0, e1!, e2!, e3!, lat);
       rh1 = a! * (g - ml);
     }
     var theta = ns * utils.adjust_lon(lon - long0);
@@ -89,13 +89,13 @@ class EquidistantConicProjection extends Projection {
   @override
   Point inverse(Point p) {
     p.x -= x0!;
-    p.y = rh - p.y! + y0!;
+    p.y = rh - p.y + y0!;
     var con, rh1, lat, lon;
     if (ns >= 0) {
-      rh1 = math.sqrt(p.x! * p.x! + p.y! * p.y!);
+      rh1 = math.sqrt(p.x * p.x + p.y * p.y);
       con = 1;
     } else {
-      rh1 = -math.sqrt(p.x! * p.x! + p.y! * p.y!);
+      rh1 = -math.sqrt(p.x * p.x + p.y * p.y);
       con = -1;
     }
     var theta = 0.0;

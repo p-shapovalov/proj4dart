@@ -63,8 +63,8 @@ class KrovakProjection extends Projection {
   @override
   Point? forward(Point? p) {
     double gfi, u, deltav, s, d, eps, ro;
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
     var delta_lon = utils.adjust_lon(lon - long0);
     gfi = math.pow(
         ((1 + e! * math.sin(lat)) / (1 - e! * math.sin(lat))), (alfa * e! / 2)) as double;
@@ -100,8 +100,8 @@ class KrovakProjection extends Projection {
       p.y *= -1;
       p.x *= -1;
     }
-    ro = math.sqrt(p.x! * p.x! + p.y! * p.y!);
-    eps = math.atan2(p.y!, p.x!);
+    ro = math.sqrt(p.x* p.x+ p.y* p.y);
+    eps = math.atan2(p.y, p.x);
     d = eps / math.sin(s0);
     s = 2 *
         (math.atan(math.pow(ro0 / ro, 1 / n) * math.tan(s0 / 2 + s45)) - s45);
@@ -119,7 +119,7 @@ class KrovakProjection extends Projection {
                   math.pow((1 + e! * math.sin(fi1!)) / (1 - e! * math.sin(fi1)),
                       e! / 2)) -
               s45);
-      if ((fi1 - p.y!).abs() < 0.0000000001) {
+      if ((fi1 - p.y).abs() < 0.0000000001) {
         ok = 1;
       }
       fi1 = p.y;

@@ -77,8 +77,8 @@ class NewZealandMapGridProjection extends Projection {
   @override
   Point? forward(Point? p) {
     int n;
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
 
     var delta_lat = lat - lat0!;
     var delta_lon = lon - long0;
@@ -126,8 +126,8 @@ class NewZealandMapGridProjection extends Projection {
   @override
   Point inverse(Point p) {
     int n;
-    var x = p.x!;
-    var y = p.y!;
+    var x = p.x;
+    var y = p.y;
 
     var delta_x = x - x0!;
     var delta_y = y - y0!;

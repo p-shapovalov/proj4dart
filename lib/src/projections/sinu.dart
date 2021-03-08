@@ -41,27 +41,27 @@ class SinusoidalProjection extends Projection {
   @override
   Point? forward(Point? p) {
     double x, y;
-    var lon = p!.x!;
+    var lon = p!.x;
     var lat = p.y;
     lon = utils.adjust_lon(lon - long0);
 
     if (sphere != null && sphere!) {
       if (m == null) {
-        lat = n != 1 ? math.asin(n! * math.sin(lat!)) : lat;
+        lat = n != 1 ? math.asin(n! * math.sin(lat)) : lat;
       } else {
-        var k = n! * math.sin(lat!);
+        var k = n! * math.sin(lat);
         for (var i = 0; i < MAX_ITER; i++) {
-          var V = (m! * lat! + math.sin(lat) - k) / (m! + math.cos(lat));
+          var V = (m! * lat+ math.sin(lat) - k) / (m! + math.cos(lat));
           lat -= V;
           if (V.abs() < consts.EPSLN) {
             break;
           }
         }
       }
-      x = a! * C_x * lon * (m! + math.cos(lat!));
+      x = a! * C_x * lon * (m! + math.cos(lat));
       y = a! * C_y * lat;
     } else {
-      var s = math.sin(lat!);
+      var s = math.sin(lat);
       var c = math.cos(lat);
       y = a! * utils.pj_mlfn(lat, s, c, en!);
       x = a! * lon * c / math.sqrt(1 - es! * s * s);
@@ -77,9 +77,9 @@ class SinusoidalProjection extends Projection {
     double lat, temp, lon, s;
 
     p.x -= x0!;
-    lon = p.x! / a!;
+    lon = p.x/ a!;
     p.y -= y0!;
-    lat = p.y! / a!;
+    lat = p.y/ a!;
 
     if (sphere != null && sphere!) {
       lat /= C_y;
@@ -92,11 +92,11 @@ class SinusoidalProjection extends Projection {
       lon = utils.adjust_lon(lon + long0);
       lat = utils.adjust_lat(lat);
     } else {
-      lat = utils.pj_inv_mlfn(p.y! / a!, es!, en);
+      lat = utils.pj_inv_mlfn(p.y/ a!, es!, en);
       s = lat.abs();
       if (s < consts.HALF_PI) {
         s = math.sin(lat);
-        temp = long0 + p.x! * math.sqrt(1 - es! * s * s) / (a! * math.cos(lat));
+        temp = long0 + p.x* math.sqrt(1 - es! * s * s) / (a! * math.cos(lat));
         //temp = long0 + p.x / (a * math.cos(lat));
         lon = utils.adjust_lon(temp);
       } else if ((s - consts.EPSLN) < consts.HALF_PI) {

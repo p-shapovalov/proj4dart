@@ -95,7 +95,7 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
 
     lam = utils.adjust_lon(lam - long0);
     if (sphere != null && sphere!) {
-      sinphi = math.sin(phi!);
+      sinphi = math.sin(phi);
       cosphi = math.cos(phi);
       coslam = math.cos(lam);
       if (mode == OBLIQ || mode == EQUIT) {
@@ -129,7 +129,7 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
       b = 0;
       coslam = math.cos(lam);
       sinlam = math.sin(lam);
-      sinphi = math.sin(phi!);
+      sinphi = math.sin(phi);
       q = utils.qsfnz(e!, sinphi);
       if (mode == OBLIQ || mode == EQUIT) {
         sinb = q / qp!;
@@ -186,8 +186,8 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
   Point? inverse(Point p) {
     p.x -= x0!;
     p.y -= y0!;
-    var x = p.x! / a!;
-    var y = p.y! / a!;
+    var x = p.x/ a!;
+    var y = p.y/ a!;
     double? lam, phi, cCe, sCe, q, rho, ab;
     if (sphere != null && sphere!) {
       double cosz = 0.0, rh, sinz = 0.0;

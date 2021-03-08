@@ -71,7 +71,7 @@ class LambertConformalConicProjection extends Projection {
   @override
   Point? forward(Point? p) {
     var lon = p!.x;
-    var lat = p.y!;
+    var lat = p.y;
 
     // singular cases :
     if ((2 * lat.abs() - math.pi).abs() <= consts.EPSLN) {
@@ -90,7 +90,7 @@ class LambertConformalConicProjection extends Projection {
       }
       rh1 = 0;
     }
-    var theta = ns * utils.adjust_lon(lon! - long0);
+    var theta = ns * utils.adjust_lon(lon- long0);
     p.x = k0! * (rh1 * math.sin(theta)) + x0!;
     p.y = k0! * (rh - rh1 * math.cos(theta)) + y0!;
 
@@ -101,8 +101,8 @@ class LambertConformalConicProjection extends Projection {
   Point? inverse(Point p) {
     double rh1, con, ts;
     double lat, lon;
-    var x = (p.x! - x0!) / k0!;
-    var y = (rh - (p.y! - y0!) / k0!);
+    var x = (p.x- x0!) / k0!;
+    var y = (rh - (p.y- y0!) / k0!);
     if (ns > 0) {
       rh1 = math.sqrt(x * x + y * y);
       con = 1;

@@ -20,8 +20,8 @@ class MillerCylindricalProjection extends Projection {
 
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
     var dlon = utils.adjust_lon(lon - long0);
     var x = x0! + a! * dlon;
     var y = y0! + a! * math.log(math.tan((math.pi / 4) + (lat / 2.5))) * 1.25;
@@ -36,8 +36,8 @@ class MillerCylindricalProjection extends Projection {
     p.x -= x0!;
     p.y -= y0!;
 
-    var lon = utils.adjust_lon(long0 + p.x! / a!);
-    var lat = 2.5 * (math.atan(math.exp(0.8 * p.y! / a!)) - math.pi / 4);
+    var lon = utils.adjust_lon(long0 + p.x/ a!);
+    var lat = 2.5 * (math.atan(math.exp(0.8 * p.y/ a!)) - math.pi / 4);
 
     p.x = lon;
     p.y = lat;

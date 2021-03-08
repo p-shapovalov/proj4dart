@@ -141,7 +141,7 @@ double hypot(double x, double y) {
   x = x.abs();
   y = y.abs();
   var a = math.max(x, y);
-  var b = math.min(x, y) / (a ?? 1);
+  var b = math.min(x, y) / a;
   return a * math.sqrt(1 + math.pow(b, 2));
 }
 
@@ -169,7 +169,7 @@ double imlfn(double ml, double e0, double? e1, double? e2, double? e3) {
 }
 
 Point inverseNadCvt(Point t, Point val, tb, ct) {
-  if (t.x!.isNaN) {
+  if (t.x.isNaN) {
     return val;
   }
   t.x = tb.x + t.x;
@@ -179,18 +179,18 @@ Point inverseNadCvt(Point t, Point val, tb, ct) {
   Point del;
   do {
     del = nad_intr(t, ct);
-    if (del.x!.isNaN) {
+    if (del.x.isNaN) {
       break;
     }
-    dif = Point(x: t.x! - del.x! - tb.x, y: t.y! + del.y! - tb.y);
-    t.x -= dif.x!;
-    t.y -= dif.y!;
-  } while (i-- != 0 && dif.x!.abs() > tol && dif.y!.abs() > tol);
+    dif = Point(x: t.x - del.x - tb.x, y: t.y + del.y - tb.y);
+    t.x -= dif.x;
+    t.y -= dif.y;
+  } while (i-- != 0 && dif.x.abs() > tol && dif.y.abs() > tol);
   if (i < 0) {
     return val;
   }
-  val.x = adjust_lon(t.x! + ct.ll[0]);
-  val.y = t.y! + ct.ll[1];
+  val.x = adjust_lon(t.x + ct.ll[0]);
+  val.y = t.y + ct.ll[1];
   return val;
 }
 
@@ -277,20 +277,20 @@ double msfnz(double eccent, double sinphi, double cosphi) {
 
 Point nad_cvt(Point pin, bool inverse, ct) {
   var val = Point(x: double.nan, y: double.nan);
-  if (pin.x!.isNaN) {
+  if (pin.x.isNaN) {
     return val;
   }
   var tb = Point(x: pin.x, y: pin.y);
   tb.x -= ct.ll[0];
   tb.y -= ct.ll[1];
-  tb.x = adjust_lon(tb.x! - math.pi) + math.pi;
+  tb.x = adjust_lon(tb.x - math.pi) + math.pi;
   var t = nad_intr(tb, ct);
   if (inverse) {
     return inverseNadCvt(t, val, tb, ct);
   } else {
-    if (!t.x!.isNaN) {
-      val.x = pin.x! - t.x!;
-      val.y = pin.y! + t.y!;
+    if (!t.x.isNaN) {
+      val.x = pin.x - t.x;
+      val.y = pin.y + t.y;
     }
   }
   return val;
@@ -300,8 +300,8 @@ Point nad_intr(pin, ct) {
   // force computation by decreasing by 1e-7 to be as closed as possible
   // from computation under C:C++ by leveraging rounding problems ...
   var t = Point(x: (pin.x - 1e-7) / ct.del[0], y: (pin.y - 1e-7) / ct.del[1]);
-  var indx = Point(x: t.x!.floorToDouble(), y: t.y!.floorToDouble());
-  Point? frct = Point(x: t.x! - 1 * indx.x!, y: t.y! - 1 * indx.y!);
+  var indx = Point(x: t.x.floorToDouble(), y: t.y.floorToDouble());
+  Point? frct = Point(x: t.x - 1 * indx.x, y: t.y - 1 * indx.y);
   var val = Point(x: double.nan, y: double.nan);
   var temp = nadInterBreakout(indx, frct, 'x', 0, ct);
   if (temp) {
@@ -317,7 +317,7 @@ Point nad_intr(pin, ct) {
   } else {
     return val;
   }
-  var inx = (indx.y! * ct.lim[0]) + indx.x!;
+  var inx = (indx.y * ct.lim[0]) + indx.x;
   var f00 = Point(x: ct.cvs[inx][0], y: ct.cvs[inx][1]);
   inx++;
   var f10 = Point(x: ct.cvs[inx][0], y: ct.cvs[inx][1]);
@@ -325,12 +325,12 @@ Point nad_intr(pin, ct) {
   var f11 = Point(x: ct.cvs[inx][0], y: ct.cvs[inx][1]);
   inx--;
   var f01 = Point(x: ct.cvs[inx][0], y: ct.cvs[inx][1]);
-  var m11 = frct!.x! * frct.y!,
-      m10 = frct.x! * (1 - frct.y!),
-      m00 = (1 - frct.x!) * (1 - frct.y!),
-      m01 = (1 - frct.x!) * frct.y!;
-  val.x = (m00 * f00.x! + m10 * f10.x! + m01 * f01.x! + m11 * f11.x!);
-  val.y = (m00 * f00.y! + m10 * f10.y! + m01 * f01.y! + m11 * f11.y!);
+  var m11 = frct!.x * frct.y,
+      m10 = frct.x * (1 - frct.y),
+      m00 = (1 - frct.x) * (1 - frct.y),
+      m01 = (1 - frct.x) * frct.y;
+  val.x = (m00 * f00.x + m10 * f10.x + m01 * f01.x + m11 * f11.x);
+  val.y = (m00 * f00.y + m10 * f10.y + m01 * f01.y + m11 * f11.y);
   return val;
 }
 

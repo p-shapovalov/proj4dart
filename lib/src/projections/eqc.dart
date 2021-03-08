@@ -42,8 +42,8 @@ class EquidistantCylindricalProjection extends Projection {
   /// forward equations--mapping lat,long to x,y
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
 
     var dlon = utils.adjust_lon(lon - long0!);
     var dlat = utils.adjust_lat(lat - lat0!);
@@ -55,8 +55,8 @@ class EquidistantCylindricalProjection extends Projection {
   /// inverse equations--mapping x,y to lat/long
   @override
   Point inverse(Point p) {
-    var x = p.x!;
-    var y = p.y!;
+    var x = p.x;
+    var y = p.y;
 
     p.x = utils.adjust_lon(long0! + ((x - x0!) / (a! * rc)));
     p.y = utils.adjust_lat(lat0! + ((y - y0!) / a!));

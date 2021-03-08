@@ -42,16 +42,16 @@ class CassiniProjection extends Projection {
   @override
   Point? forward(Point? p) {
     var x, y;
-    var lam = p!.x!;
+    var lam = p!.x;
     var phi = p.y;
     lam = utils.adjust_lon(lam - long0!);
 
     if (sphere != null && sphere!) {
-      x = a! * math.asin(math.cos(phi!) * math.sin(lam));
+      x = a! * math.asin(math.cos(phi) * math.sin(lam));
       y = a! * (math.atan2(math.tan(phi), math.cos(lam)) - lat0!);
     } else {
       // ellipsoid
-      var sinphi = math.sin(phi!);
+      var sinphi = math.sin(phi);
       var cosphi = math.cos(phi);
       var nl = utils.gN(a!, e!, sinphi);
       var tl = math.tan(phi) * math.tan(phi);
@@ -76,8 +76,8 @@ class CassiniProjection extends Projection {
   Point inverse(Point p) {
     p.x -= x0!;
     p.y -= y0!;
-    var x = p.x! / a!;
-    var y = p.y! / a!;
+    var x = p.x/ a!;
+    var y = p.y/ a!;
     var phi, lam;
 
     if (sphere != null && sphere!) {

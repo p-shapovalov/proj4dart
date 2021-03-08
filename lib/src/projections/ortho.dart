@@ -31,8 +31,8 @@ class OrthographicProjection extends Projection {
     double coslon; // cos of longitude
     double ksp; // scale factor
     double? g, x, y;
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
     dlon = utils.adjust_lon(lon - long0);
 
     sinphi = math.sin(lat);
@@ -59,7 +59,7 @@ class OrthographicProjection extends Projection {
     double? lon, lat;
     p.x -= x0!;
     p.y -= y0!;
-    rh = math.sqrt(p.x! * p.x! + p.y! * p.y!);
+    rh = math.sqrt(p.x* p.x+ p.y* p.y);
     z = utils.asinz(rh / a!);
 
     sinz = math.sin(z);
@@ -72,20 +72,20 @@ class OrthographicProjection extends Projection {
       p.y = lat!;
       return p;
     }
-    lat = utils.asinz(cosz * sin_p14 + (p.y! * sinz * cos_p14) / rh);
+    lat = utils.asinz(cosz * sin_p14 + (p.y* sinz * cos_p14) / rh);
     con = lat0!.abs() - consts.HALF_PI;
     if (con.abs() <= consts.EPSLN) {
       if (lat0! >= 0) {
-        lon = utils.adjust_lon(long0 + math.atan2(p.x!, -p.y!));
+        lon = utils.adjust_lon(long0 + math.atan2(p.x, -p.y));
       } else {
-        lon = utils.adjust_lon(long0 - math.atan2(-p.x!, p.y!));
+        lon = utils.adjust_lon(long0 - math.atan2(-p.x, p.y));
       }
       p.x = lon;
       p.y = lat;
       return p;
     }
     lon = utils.adjust_lon(long0 +
-        math.atan2((p.x! * sinz), rh * cos_p14 * cosz - p.y! * sin_p14 * sinz));
+        math.atan2((p.x* sinz), rh * cos_p14 * cosz - p.y* sin_p14 * sinz));
     p.x = lon;
     p.y = lat;
     return p;

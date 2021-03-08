@@ -111,8 +111,8 @@ class HotineObliqueMercatorProjection extends Projection {
 
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
     var dlon = utils.adjust_lon(lon - long0);
     double us, vs;
     double con;
@@ -161,11 +161,11 @@ class HotineObliqueMercatorProjection extends Projection {
   Point inverse(Point p) {
     double us, vs;
     if (no_rot!) {
-      vs = p.y! - y0!;
-      us = p.x! - x0!;
+      vs = p.y- y0!;
+      us = p.x- x0!;
     } else {
-      vs = (p.x! - x0!) * math.cos(alpha!) - (p.y! - y0!) * math.sin(alpha!);
-      us = (p.y! - y0!) * math.cos(alpha!) + (p.x! - x0!) * math.sin(alpha!);
+      vs = (p.x- x0!) * math.cos(alpha!) - (p.y- y0!) * math.sin(alpha!);
+      us = (p.y- y0!) * math.cos(alpha!) + (p.x- x0!) * math.sin(alpha!);
       us += uc;
     }
     var qp = math.exp(-1 * bl * vs / al);

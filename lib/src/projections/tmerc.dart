@@ -40,8 +40,8 @@ class TransverseMercatorProjection extends Projection {
   }
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
 
     var delta_lon = utils.adjust_lon(lon - long0);
     double con;
@@ -154,8 +154,8 @@ class TransverseMercatorProjection extends Projection {
   Point inverse(Point p) {
     double con, phi;
     double lat, lon;
-    var x = (p.x! - x0!) * (1 / a!);
-    var y = (p.y! - y0!) * (1 / a!);
+    var x = (p.x- x0!) * (1 / a!);
+    var y = (p.y- y0!) * (1 / a!);
 
     if (es == null) {
       var f = math.exp(x / k0!);

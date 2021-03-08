@@ -41,8 +41,8 @@ class GaussProjection extends Projection {
 
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
 
     p.y = 2 *
             math.atan(K *
@@ -56,13 +56,13 @@ class GaussProjection extends Projection {
   @override
   Point inverse(Point p) {
     var DEL_TOL = 1e-14;
-    var lon = p.x! / C;
-    var lat = p.y!;
+    var lon = p.x/ C;
+    var lat = p.y;
     var num = math.pow(math.tan(0.5 * lat + consts.FORTPI) / K, 1 / C);
     for (var i = 0; i < MAX_ITER; i++) {
-      lat = 2 * math.atan(num * utils.srat(e! * math.sin(p.y!), -0.5 * e!)) -
+      lat = 2 * math.atan(num * utils.srat(e! * math.sin(p.y), -0.5 * e!)) -
           consts.HALF_PI;
-      if ((lat - p.y!).abs() < DEL_TOL) {
+      if ((lat - p.y).abs() < DEL_TOL) {
         break;
       }
       p.y = lat;

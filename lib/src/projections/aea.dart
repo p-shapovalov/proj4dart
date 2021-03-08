@@ -65,8 +65,8 @@ class AlbersProjection extends Projection {
   /// Albers Conical Equal Area forward equations--mapping lat,long to x,y
   @override
   Point? forward(Point? p) {
-    var lon = p!.x!;
-    var lat = p.y!;
+    var lon = p!.x;
+    var lat = p.y;
 
     var sin_phi = math.sin(lat);
     // var cos_phi = math.cos(lat);
@@ -87,12 +87,12 @@ class AlbersProjection extends Projection {
     var rh1, qs, con, theta, lon, lat;
 
     p.x -= x0!;
-    p.y = rh - p.y! + y0!;
+    p.y = rh - p.y+ y0!;
     if (ns0 >= 0) {
-      rh1 = math.sqrt(p.x! * p.x! + p.y! * p.y!);
+      rh1 = math.sqrt(p.x* p.x+ p.y* p.y);
       con = 1;
     } else {
-      rh1 = -math.sqrt(p.x! * p.x! + p.y! * p.y!);
+      rh1 = -math.sqrt(p.x* p.x+ p.y* p.y);
       con = -1;
     }
     theta = 0;
