@@ -6,7 +6,7 @@ class ProjectionTuple {
   final Projection fromProj;
   final Projection toProj;
 
-  ProjectionTuple({@required this.fromProj, @required this.toProj})
+  ProjectionTuple({required this.fromProj, required this.toProj})
       : assert(null != fromProj),
         assert(null != toProj);
 

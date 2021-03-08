@@ -10,8 +10,8 @@ class MollweideProjection extends Projection {
   static final List<String> names = ['Mollweide', 'moll'];
 
   double long0;
-  double x0;
-  double y0;
+  double? x0;
+  double? y0;
 
   MollweideProjection.init(ProjParams params)
       : long0 = params.long0,
@@ -20,9 +20,9 @@ class MollweideProjection extends Projection {
         super.init(params);
 
   @override
-  Point forward(Point p) {
-    var lon = p.x;
-    var lat = p.y;
+  Point? forward(Point? p) {
+    var lon = p!.x!;
+    var lat = p.y!;
 
     var delta_lon = utils.adjust_lon(lon - long0);
     var theta = lat;
@@ -44,8 +44,8 @@ class MollweideProjection extends Projection {
     if (math.pi / 2 - lat.abs() < consts.EPSLN) {
       delta_lon = 0;
     }
-    var x = 0.900316316158 * a * delta_lon * math.cos(theta) + x0;
-    var y = 1.4142135623731 * a * math.sin(theta) + y0;
+    var x = 0.900316316158 * a! * delta_lon * math.cos(theta) + x0!;
+    var y = 1.4142135623731 * a! * math.sin(theta) + y0!;
 
     p.x = x;
     p.y = y;
@@ -56,9 +56,9 @@ class MollweideProjection extends Projection {
   Point inverse(Point p) {
     double theta;
     double arg;
-    p.x -= x0;
-    p.y -= y0;
-    arg = p.y / (1.4142135623731 * a);
+    p.x -= x0!;
+    p.y -= y0!;
+    arg = p.y! / (1.4142135623731 * a!);
 
     // Because of division by zero problems, 'arg' can not be 1.  Therefore
     // a number very close to one is used instead.
@@ -67,7 +67,7 @@ class MollweideProjection extends Projection {
     }
     theta = math.asin(arg);
     var lon = utils
-        .adjust_lon(long0 + (p.x / (0.900316316158 * a * math.cos(theta))));
+        .adjust_lon(long0 + (p.x! / (0.900316316158 * a! * math.cos(theta))));
     if (lon < (-math.pi)) {
       lon = -math.pi;
     }

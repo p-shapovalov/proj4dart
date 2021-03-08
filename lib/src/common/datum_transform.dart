@@ -3,11 +3,11 @@ import 'package:proj4dart/src/classes/point.dart';
 import 'package:proj4dart/src/common/datum_utils.dart' as datum_utils;
 import 'package:proj4dart/src/constants/values.dart' as consts;
 
-bool checkParams(int type) {
+bool checkParams(int? type) {
   return (type == consts.PJD_3PARAM || type == consts.PJD_7PARAM);
 }
 
-Point transform(Datum source, Datum dest, Point point) {
+Point? transform(Datum source, Datum dest, Point? point) {
   // Short cut if the datums are identical.
   if (datum_utils.compareDatums(source, dest)) {
     return point; // in this case, zero is sucess,
@@ -29,7 +29,7 @@ Point transform(Datum source, Datum dest, Point point) {
   // }
 
   // Convert to geocentric coordinates.
-  point = datum_utils.geodeticToGeocentric(point, source.es, source.a);
+  point = datum_utils.geodeticToGeocentric(point!, source.es, source.a);
   // Convert between datums
   if (checkParams(source.datumType)) {
     point = datum_utils.geocentricToWgs84(
@@ -37,7 +37,7 @@ Point transform(Datum source, Datum dest, Point point) {
   }
   if (checkParams(dest.datumType)) {
     point = datum_utils.geocentricFromWgs84(
-        point, dest.datumType, dest.datumParams);
+        point!, dest.datumType, dest.datumParams);
   }
-  return datum_utils.geocentricToGeodetic(point, dest.es, dest.a, dest.b);
+  return datum_utils.geocentricToGeodetic(point!, dest.es, dest.a!, dest.b);
 }

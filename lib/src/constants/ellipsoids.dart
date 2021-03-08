@@ -271,10 +271,10 @@ final List<Ellipsoid> _ellipsoids = [
   sphere
 ];
 
-Ellipsoid match(String ellipseName) {
+Ellipsoid? match(String? ellipseName) {
   var ell = _ellipsoids
       .where((element) =>
-          element.shortName.toLowerCase() == ellipseName.toLowerCase())
+          element.shortName!.toLowerCase() == ellipseName!.toLowerCase())
       .toList();
   return ell.length == 1 ? ell[0] : null;
 }

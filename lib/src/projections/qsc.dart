@@ -20,9 +20,9 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
   double y0;
   double lat_ts;
   String title;
-  int face;
+  int? face;
 
-  double one_minus_f, one_minus_f_squared;
+  late double one_minus_f, one_minus_f_squared;
 
   QuadrilateralizedSphericalCubeProjection.init(ProjParams params)
       : lat0 = params.lat0 ?? 0.0,
@@ -48,29 +48,29 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
     // Fill in useful values for the ellipsoid <-> sphere shift
     // described in [LK12].
     if (es != 0) {
-      one_minus_f = 1 - (a - b) / a;
+      one_minus_f = 1 - (a! - b!) / a!;
       one_minus_f_squared = one_minus_f * one_minus_f;
     }
   }
 
   @override
-  Point forward(Point p) {
+  Point? forward(Point? p) {
     var xy = Point(x: 0, y: 0);
-    double lat, lon;
-    double theta, phi;
+    double? lat, lon;
+    double? theta, phi;
     double t, mu;
     // nu;
     var area = {'value': 0};
 
     // move lon according to projection's lon
-    p.x -= long0;
+    p!.x -= long0;
 
     // Convert the geodetic latitude to a geocentric latitude.
     // This corresponds to the shift from the ellipsoid to the sphere
     // described in [LK12].
     if (es != 0) {
       // if (P->es != 0) {
-      lat = math.atan(one_minus_f_squared * math.tan(p.y));
+      lat = math.atan(one_minus_f_squared * math.tan(p.y!));
     } else {
       lat = p.y;
     }
@@ -82,8 +82,8 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
     // unit sphere cartesian coordinates as an intermediate step.
     lon = p.x; //lon = lp['lam'];
     if (face == faces.TOP) {
-      phi = consts.HALF_PI - lat;
-      if (lon >= consts.FORTPI && lon <= consts.HALF_PI + consts.FORTPI) {
+      phi = consts.HALF_PI - lat!;
+      if (lon! >= consts.FORTPI && lon <= consts.HALF_PI + consts.FORTPI) {
         area['value'] = areas.AREA_0;
         theta = lon - consts.HALF_PI;
       } else if (lon > consts.HALF_PI + consts.FORTPI ||
@@ -99,8 +99,8 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
         theta = lon;
       }
     } else if (face == faces.BOTTOM) {
-      phi = consts.HALF_PI + lat;
-      if (lon >= consts.FORTPI && lon <= consts.HALF_PI + consts.FORTPI) {
+      phi = consts.HALF_PI + lat!;
+      if (lon! >= consts.FORTPI && lon <= consts.HALF_PI + consts.FORTPI) {
         area['value'] = areas.AREA_0;
         theta = -lon + consts.HALF_PI;
       } else if (lon < consts.FORTPI && lon >= -consts.FORTPI) {
@@ -120,15 +120,15 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
       double sinlon, coslon;
 
       if (face == faces.RIGHT) {
-        lon = _qsc_shift_lon_origin(lon, consts.HALF_PI);
+        lon = _qsc_shift_lon_origin(lon!, consts.HALF_PI);
       } else if (face == faces.BACK) {
-        lon = _qsc_shift_lon_origin(lon, consts.SPI);
+        lon = _qsc_shift_lon_origin(lon!, consts.SPI);
       } else if (face == faces.LEFT) {
-        lon = _qsc_shift_lon_origin(lon, -consts.HALF_PI);
+        lon = _qsc_shift_lon_origin(lon!, -consts.HALF_PI);
       }
-      sinlat = math.sin(lat);
+      sinlat = math.sin(lat!);
       coslat = math.cos(lat);
-      sinlon = math.sin(lon);
+      sinlon = math.sin(lon!);
       coslon = math.cos(lon);
       q = coslat * coslon;
       r = coslat * sinlon;
@@ -176,8 +176,8 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
     // Now compute x, y from mu and nu
     xy.x = t * math.cos(mu);
     xy.y = t * math.sin(mu);
-    xy.x = xy.x * a + x0;
-    xy.y = xy.y * a + y0;
+    xy.x = xy.x! * a! + x0;
+    xy.y = xy.y! * a! + y0;
 
     p.x = xy.x;
     p.y = xy.y;
@@ -193,19 +193,19 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
     var area = {'value': 0};
 
     // de-offset
-    p.x = (p.x - x0) / a;
-    p.y = (p.y - y0) / a;
+    p.x = (p.x! - x0) / a!;
+    p.y = (p.y! - y0) / a!;
 
     // Convert the input x, y to the mu and nu angles as used by QSC.
     // This depends on the area of the cube face.
-    nu = math.atan(math.sqrt(p.x * p.x + p.y * p.y));
-    mu = math.atan2(p.y, p.x);
-    if (p.x >= 0.0 && p.x >= p.y.abs()) {
+    nu = math.atan(math.sqrt(p.x! * p.x! + p.y! * p.y!));
+    mu = math.atan2(p.y!, p.x!);
+    if (p.x! >= 0.0 && p.x! >= p.y!.abs()) {
       area['value'] = areas.AREA_0;
-    } else if (p.y >= 0.0 && p.y >= p.x.abs()) {
+    } else if (p.y! >= 0.0 && p.y! >= p.x!.abs()) {
       area['value'] = areas.AREA_1;
       mu -= consts.HALF_PI;
-    } else if (p.x < 0.0 && -p.x >= p.y.abs()) {
+    } else if (p.x! < 0.0 && -p.x! >= p.y!.abs()) {
       area['value'] = areas.AREA_2;
       mu = (mu < 0.0 ? mu + consts.SPI : mu - consts.SPI);
     } else {
@@ -309,11 +309,11 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
       lp['phi'] = math.acos(-s) - consts.HALF_PI;
       lp['lam'] = math.atan2(r, q);
       if (face == faces.RIGHT) {
-        lp['lam'] = _qsc_shift_lon_origin(lp['lam'], -consts.HALF_PI);
+        lp['lam'] = _qsc_shift_lon_origin(lp['lam']!, -consts.HALF_PI);
       } else if (face == faces.BACK) {
-        lp['lam'] = _qsc_shift_lon_origin(lp['lam'], -consts.SPI);
+        lp['lam'] = _qsc_shift_lon_origin(lp['lam']!, -consts.SPI);
       } else if (face == faces.LEFT) {
-        lp['lam'] = _qsc_shift_lon_origin(lp['lam'], consts.HALF_PI);
+        lp['lam'] = _qsc_shift_lon_origin(lp['lam']!, consts.HALF_PI);
       }
     }
 
@@ -322,18 +322,18 @@ class QuadrilateralizedSphericalCubeProjection extends Projection {
     if (es != 0) {
       int invert_sign;
       double tanphi, xa;
-      invert_sign = lp['phi'] < 0 ? 1 : 0;
-      tanphi = math.tan(lp['phi']);
-      xa = b / math.sqrt(tanphi * tanphi + one_minus_f_squared);
-      lp['phi'] = math.atan(math.sqrt(a * a - xa * xa) / (one_minus_f * xa));
+      invert_sign = lp['phi']! < 0 ? 1 : 0;
+      tanphi = math.tan(lp['phi']!);
+      xa = b! / math.sqrt(tanphi * tanphi + one_minus_f_squared);
+      lp['phi'] = math.atan(math.sqrt(a! * a! - xa * xa) / (one_minus_f * xa));
       if (invert_sign != 0) {
-        lp['phi'] = -lp['phi'];
+        lp['phi'] = -lp['phi']!;
       }
     }
 
-    lp['lam'] += long0;
-    p.x = lp['lam'];
-    p.y = lp['phi'];
+    lp['lam'] = lp['lam']! + long0;
+    p.x = lp['lam']!;
+    p.y = lp['phi']!;
     return p;
   }
 

@@ -4,14 +4,14 @@ import 'package:proj4dart/src/classes/projection.dart';
 /// Global class for storing predefined and user-defined Projections
 class ProjectionStore {
   // WGS84 Projection which is not overrideable
-  final Projection WGS84;
+  final Projection? WGS84;
 
   // EPSG:3857 Projection which is not overrideable
-  final Projection GOOGLE;
+  final Projection? GOOGLE;
 
   // Key: Cordinate System / Country / Code / !Any alias!
   // Value: Projection
-  final Map<String, Projection> _projectionCache;
+  final Map<String, Projection?> _projectionCache;
 
   bool get isEmpty => _projectionCache.isEmpty;
 
@@ -29,7 +29,7 @@ class ProjectionStore {
 
   /// Private constructor
   ProjectionStore._internalInitializer(
-      {Projection wgs84, Projection nad83, Projection google})
+      {Projection? wgs84, Projection? nad83, Projection? google})
       : WGS84 = wgs84,
         GOOGLE = google,
         _projectionCache = {} {
@@ -54,12 +54,12 @@ class ProjectionStore {
             ));
 
   /// Get Projection from the store
-  Projection get(String srsCode) {
+  Projection? get(String srsCode) {
     return _projectionCache[srsCode];
   }
 
   /// Registers Projection to the store
-  Projection register(String code, Projection projection) {
+  Projection? register(String code, Projection? projection) {
     if (_projectionCache.containsKey(code)) {
       print(
           'Warning a Projection was already registered with the following name: $code, it will be overridden');

@@ -1,6 +1,6 @@
 import 'package:proj4dart/src/classes/unit.dart';
 
-Unit match(String unit) {
+Unit? match(String unit) {
   switch (unit) {
     case 'ft':
       return Unit(to_meter: 0.3048);

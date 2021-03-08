@@ -4,11 +4,17 @@ version: 1.0.5
 homepage: https://github.com/maRci002/proj4dart
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  mgrs_dart: ^1.0.1
-  wkt_parser: ^1.0.7
+  mgrs_dart:
+    git:
+      url: https://github.com/p-shapovalov/mgrs_dart.git  
+      ref: e81150914fe3c282ba5011b024407248bdb4bbdc
+  wkt_parser: 
+    git:
+      url: https://github.com/p-shapovalov/wkt-parser-dart.git  
+      ref: a411504847c3b19353ddfd5c440e9d3c28838cab
   meta: ^1.1.8
 
 dev_dependencies:

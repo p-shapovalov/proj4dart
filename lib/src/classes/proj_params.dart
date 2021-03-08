@@ -7,51 +7,51 @@ import 'package:proj4dart/src/constants/values.dart' as consts;
 import 'package:wkt_parser/wkt_parser.dart' as wkt_parser;
 
 class ProjParams {
-  Map<String, Object> map = {};
-  String srsCode;
+  Map<String, Object?> map = {};
+  String? srsCode;
 
-  String get title => map['title'];
-  String get datumCode => map['datumCode'];
-  String get proj => map['proj'];
-  double get rf => map['rf'];
-  double get lat0 => map['lat0'];
-  double get lat1 => map['lat1'];
-  double get lat2 => map['lat2'];
-  double get lat_ts => map['lat_ts'];
-  double get long0 => map['long0'] ?? double.nan;
-  double get long1 => map['long1'];
-  double get long2 => map['long2'];
-  double get alpha => map['alpha'];
-  double get longc => map['longc'];
-  double get x0 => map['x0'];
-  double get y0 => map['y0'];
-  double get k0 => map['k0'];
-  double get k => map['k'];
-  double get a => map['a'];
-  double get b => map['b'];
-  bool get R_A => map['R_A'];
-  int get zone => map['zone'];
-  bool get utmSouth => map['utmSouth'];
-  List<double> get datum_params => map['datum_params'] is List<double>
-      ? map['datum_params']
-      : _parseDatumParams(map['datum_params']);
-  double get to_meter => map['to_meter'];
-  String get units => map['units'];
-  double get from_greenwich => map['from_greenwich'];
-  String get nadgrids => map['nadgrids'];
-  String get axis => map['axis'];
-  bool get no_defs => map['no_defs'];
+  String? get title => map['title'] as String?;
+  String? get datumCode => map['datumCode'] as String?;
+  String? get proj => map['proj'] as String?;
+  double? get rf => map['rf'] as double?;
+  double? get lat0 => map['lat0'] as double?;
+  double? get lat1 => map['lat1'] as double?;
+  double? get lat2 => map['lat2'] as double?;
+  double? get lat_ts => map['lat_ts'] as double?;
+  double get long0 => map['long0'] as double? ?? double.nan;
+  double? get long1 => map['long1'] as double?;
+  double? get long2 => map['long2'] as double?;
+  double? get alpha => map['alpha'] as double?;
+  double? get longc => map['longc'] as double?;
+  double? get x0 => map['x0'] as double?;
+  double? get y0 => map['y0'] as double?;
+  double? get k0 => map['k0'] as double?;
+  double? get k => map['k'] as double?;
+  double? get a => map['a'] as double?;
+  double? get b => map['b'] as double?;
+  bool? get R_A => map['R_A'] as bool?;
+  int? get zone => map['zone'] as int?;
+  bool? get utmSouth => map['utmSouth'] as bool?;
+  List<double>? get datum_params => map['datum_params'] is List<double>
+      ? map['datum_params'] as List<double>?
+      : _parseDatumParams(map['datum_params'] as List<Object>?);
+  double? get to_meter => map['to_meter'] as double?;
+  String? get units => map['units'] as String?;
+  double? get from_greenwich => map['from_greenwich'] as double?;
+  String? get nadgrids => map['nadgrids'] as String?;
+  String? get axis => map['axis'] as String?;
+  bool? get no_defs => map['no_defs'] as bool?;
 
   // Extra properties
-  String get ellps => map['ellps'];
-  String get datumName => map['datumName'];
-  bool get sphere => map['sphere'];
-  double get es => map['es'];
-  double get e => map['e'];
-  double get ep2 => map['ep2'];
+  String? get ellps => map['ellps'] as String?;
+  String? get datumName => map['datumName'] as String?;
+  bool? get sphere => map['sphere'] as bool?;
+  double? get es => map['es'] as double?;
+  double? get e => map['e'] as double?;
+  double? get ep2 => map['ep2'] as double?;
 
   // Datum properties
-  Datum get datum => map['datum'];
+  Datum? get datum => map['datum'] as Datum?;
 
   /// Default constructor
   ProjParams(String defData) {
@@ -87,58 +87,58 @@ class ProjParams {
           map['title'] = v;
           break;
         case 'rf':
-          map['rf'] = v is double ? v : double.parse(v);
+          map['rf'] = v is double ? v : double.parse(v as String);
           break;
         case 'lat_0':
-          map['lat0'] = v is double ? v : double.parse(v) * consts.D2R;
+          map['lat0'] = v is double ? v : double.parse(v as String) * consts.D2R;
           break;
         case 'lat_1':
-          map['lat1'] = v is double ? v : double.parse(v) * consts.D2R;
+          map['lat1'] = v is double ? v : double.parse(v as String) * consts.D2R;
           break;
         case 'lat_2':
-          map['lat2'] = v is double ? v : double.parse(v) * consts.D2R;
+          map['lat2'] = v is double ? v : double.parse(v as String) * consts.D2R;
           break;
         case 'lat_ts':
-          map['lat_ts'] = v is double ? v : double.parse(v) * consts.D2R;
+          map['lat_ts'] = v is double ? v : double.parse(v as String) * consts.D2R;
           break;
         case 'lon_0':
-          map['long0'] = v is double ? v : double.parse(v) * consts.D2R;
+          map['long0'] = v is double ? v : double.parse(v as String) * consts.D2R;
           break;
         case 'lon_1':
-          map['long1'] = v is double ? v : double.parse(v) * consts.D2R;
+          map['long1'] = v is double ? v : double.parse(v as String) * consts.D2R;
           break;
         case 'lon_2':
-          map['long2'] = v is double ? v : double.parse(v) * consts.D2R;
+          map['long2'] = v is double ? v : double.parse(v as String) * consts.D2R;
           break;
         case 'alpha':
-          map['alpha'] = v is double ? v : double.parse(v) * consts.D2R;
+          map['alpha'] = v is double ? v : double.parse(v as String) * consts.D2R;
           break;
         case 'lonc':
-          map['longc'] = v is double ? v : double.parse(v) * consts.D2R;
+          map['longc'] = v is double ? v : double.parse(v as String) * consts.D2R;
           break;
         case 'x_0':
-          map['x0'] = v is double ? v : double.parse(v);
+          map['x0'] = v is double ? v : double.parse(v as String);
           break;
         case 'y_0':
-          map['y0'] = v is double ? v : double.parse(v);
+          map['y0'] = v is double ? v : double.parse(v as String);
           break;
         case 'k_0':
-          map['k0'] = v is double ? v : double.parse(v);
+          map['k0'] = v is double ? v : double.parse(v as String);
           break;
         case 'k':
-          map['k0'] = v is double ? v : double.parse(v);
+          map['k0'] = v is double ? v : double.parse(v as String);
           break;
         case 'a':
-          map['a'] = v is double ? v : double.parse(v);
+          map['a'] = v is double ? v : double.parse(v as String);
           break;
         case 'b':
-          map['b'] = v is double ? v : double.parse(v);
+          map['b'] = v is double ? v : double.parse(v as String);
           break;
         case 'r_a':
           map['R_A'] = true;
           break;
         case 'zone':
-          map['zone'] = v is int ? v : int.parse(v);
+          map['zone'] = v is int ? v : int.parse(v as String);
           break;
         case 'south':
           map['utmSouth'] = true;
@@ -147,23 +147,23 @@ class ProjParams {
           map['datum_params'] = _getDatumParamsFromString(v.toString());
           break;
         case 'to_meter':
-          map['to_meter'] = v is double ? v : double.parse(v);
+          map['to_meter'] = v is double ? v : double.parse(v as String);
           break;
         case 'units':
           map['units'] = v;
-          var unit = consts_units.match(v);
+          var unit = consts_units.match(v as String);
           if (unit != null) {
             map['to_meter'] = unit.to_meter;
           }
           break;
         case 'from_greenwich':
           map['from_greenwich'] =
-              v is double ? v : double.parse(v) * consts.D2R;
+              v is double ? v : double.parse(v as String) * consts.D2R;
           break;
         case 'pm':
-          var primeMeridian = consts_pm.match(v);
+          var primeMeridian = consts_pm.match(v as String);
           map['from_greenwich'] =
-              (primeMeridian ?? (v is double ? v : double.parse(v))) *
+              (primeMeridian ?? (v is double ? v as double? : double.parse(v)))! *
                   consts.D2R;
           break;
         case 'datum':
@@ -202,17 +202,17 @@ class ProjParams {
       }
     });
     if (datumCode != null && datumCode != 'WGS84') {
-      map['datumCode'] = datumCode.toLowerCase();
+      map['datumCode'] = datumCode!.toLowerCase();
     }
   }
 
   /// Get datum, sphere and eccentricity parameters
   void _addExtraProps() {
     if (datumCode != null && datumCode != 'none') {
-      var datumDef = datums.match(datumCode);
+      var datumDef = datums.match(datumCode!);
       if (datumDef != null) {
         map['datum_params'] = datumDef.towgs84 != null
-            ? _getDatumParamsFromString(datumDef.towgs84)
+            ? _getDatumParamsFromString(datumDef.towgs84!)
             : null;
         map['ellps'] = datumDef.ellipse;
         map['datumName'] = datumDef.datumName ?? datumCode;
@@ -221,8 +221,8 @@ class ProjParams {
     map['k0'] = k0 ?? 1.0;
     map['axis'] = axis ?? 'enu';
     map['ellps'] = ellps ?? 'wgs84';
-    var sphere = dc.sphere(a, b, rf, ellps, map['sphere']);
-    var ecc = dc.eccentricity(sphere['a'], sphere['b'], sphere['rf'], R_A);
+    var sphere = dc.sphere(a, b, rf, ellps, map['sphere'] as bool?);
+    var ecc = dc.eccentricity(sphere['a'] as double, sphere['b'] as double, sphere['rf'] as double?, R_A);
     map['a'] = sphere['a'];
     map['b'] = sphere['b'];
     map['rf'] = sphere['rf'];
@@ -241,7 +241,7 @@ class ProjParams {
   }
 
   /// Parse to List<double> if possible for the getter function to work
-  List<double> _parseDatumParams(List<Object> paramsList) {
+  List<double>? _parseDatumParams(List<Object>? paramsList) {
     return paramsList != null
         ? paramsList.map((e) => double.parse(e.toString())).toList()
         : null;

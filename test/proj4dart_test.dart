@@ -145,8 +145,8 @@ void main() {
     test('ProjectionTuple should create the same result as "plain" Projections',
         () {
       final defs = all_proj4_defs.testDefs;
-      final from = Projection.parse(defs['EPSG:23700']);
-      final to = Projection.parse(defs['EPSG:28426']);
+      final from = Projection.parse(defs['EPSG:23700']!);
+      final to = Projection.parse(defs['EPSG:28426']!);
       final tuple = ProjectionTuple(fromProj: from, toProj: to);
 
       final plainForwardResult = from.transform(
@@ -225,12 +225,12 @@ void _checkProjectAndUnProjectResults(
     final point = _getTestPointByKey(key);
 
     final wgs = Projection.WGS84;
-    final custom = Projection.parse(defs[key]);
+    final custom = Projection.parse(defs[key]!);
     var closeToHelper = closeToHelpers[custom.runtimeType];
 
     if (value.forwardResultError != null) {
       try {
-        wgs.transform(custom, point);
+        wgs!.transform(custom, point);
       } on Exception catch (error) {
         expect(
           value.forwardResultError,
@@ -239,24 +239,24 @@ void _checkProjectAndUnProjectResults(
         );
       }
     } else {
-      final forwardResult = wgs.transform(custom, point);
+      final forwardResult = wgs!.transform(custom, point);
 
       if (value.forwardResult.x != forwardResult.x) {
-        if (value.forwardResult.x.isNaN) {
+        if (value.forwardResult.x!.isNaN) {
           expect(forwardResult.x, isNaN, reason: key);
         } else {
           expect(forwardResult.x,
-              closeTo(value.forwardResult.x, closeToHelper.worstForwardX),
+              closeTo(value.forwardResult.x!, closeToHelper!.worstForwardX!),
               reason: key);
         }
       }
 
       if (value.forwardResult.y != forwardResult.y) {
-        if (value.forwardResult.y.isNaN) {
+        if (value.forwardResult.y!.isNaN) {
           expect(forwardResult.y, isNaN, reason: key);
         } else {
           expect(forwardResult.y,
-              closeTo(value.forwardResult.y, closeToHelper.worstForwardY),
+              closeTo(value.forwardResult.y!, closeToHelper!.worstForwardY!),
               reason: key);
         }
       }
@@ -275,22 +275,22 @@ void _checkProjectAndUnProjectResults(
     } else {
       final inverseResult = custom.transform(wgs, value.forwardResult);
 
-      if (value.inverseResult.x != inverseResult.x) {
-        if (value.inverseResult.x.isNaN) {
+      if (value.inverseResult!.x != inverseResult.x) {
+        if (value.inverseResult!.x!.isNaN) {
           expect(inverseResult.x, isNaN, reason: key);
         } else {
           expect(inverseResult.x,
-              closeTo(value.inverseResult.x, closeToHelper.worstInverseX),
+              closeTo(value.inverseResult!.x!, closeToHelper!.worstInverseX!),
               reason: key);
         }
       }
 
-      if (value.inverseResult.y != inverseResult.y) {
-        if (value.inverseResult.y.isNaN) {
+      if (value.inverseResult!.y != inverseResult.y) {
+        if (value.inverseResult!.y!.isNaN) {
           expect(inverseResult.y, isNaN, reason: key);
         } else {
           expect(inverseResult.y,
-              closeTo(value.inverseResult.y, closeToHelper.worstInverseY),
+              closeTo(value.inverseResult!.y!, closeToHelper!.worstInverseY!),
               reason: key);
         }
       }
@@ -306,7 +306,7 @@ Map<Type, CloseToHelper> _getCloseToHelpers(Map<String, String> defs,
     final point = _getTestPointByKey(key);
 
     final wgs = Projection.WGS84;
-    final custom = Projection.parse(defs[key]);
+    final custom = Projection.parse(defs[key]!);
     final type = custom.runtimeType;
 
     var currClose = closeHelperMap[type];
@@ -315,22 +315,22 @@ Map<Type, CloseToHelper> _getCloseToHelpers(Map<String, String> defs,
     if (value.forwardResultError == null && value.inverseResultError == null) {
       currClose.testedAgainst++;
 
-      final forwardResult = wgs.transform(custom, point);
-      if (value.forwardResult.x.isFinite) {
-        currClose.putForwardX((forwardResult.x - value.forwardResult.x).abs());
+      final forwardResult = wgs!.transform(custom, point);
+      if (value.forwardResult.x!.isFinite) {
+        currClose.putForwardX((forwardResult.x! - value.forwardResult.x!).abs());
       }
 
-      if (value.forwardResult.y.isFinite) {
-        currClose.putForwardY((forwardResult.y - value.forwardResult.y).abs());
+      if (value.forwardResult.y!.isFinite) {
+        currClose.putForwardY((forwardResult.y! - value.forwardResult.y!).abs());
       }
 
       final inverseResult = custom.transform(wgs, value.forwardResult);
-      if (value.inverseResult.x.isFinite) {
-        currClose.putInverseX((inverseResult.x - value.inverseResult.x).abs());
+      if (value.inverseResult!.x!.isFinite) {
+        currClose.putInverseX((inverseResult.x! - value.inverseResult!.x!).abs());
       }
 
-      if (value.inverseResult.y.isFinite) {
-        currClose.putInverseY((inverseResult.y - value.inverseResult.y).abs());
+      if (value.inverseResult!.y!.isFinite) {
+        currClose.putInverseY((inverseResult.y! - value.inverseResult!.y!).abs());
       }
     }
   });

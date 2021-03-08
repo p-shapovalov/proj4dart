@@ -12,16 +12,16 @@ import 'package:proj4dart/src/classes/projection.dart';
 class SwissObliqueMercatorProjection extends Projection {
   static final List<String> names = ['somerc'];
 
-  double x0;
-  double y0;
-  double lambda0;
-  double R;
-  double alpha;
-  double b0;
-  double K;
+  double? x0;
+  double? y0;
+  late double lambda0;
+  late double R;
+  late double alpha;
+  late double b0;
+  late double K;
 
   SwissObliqueMercatorProjection.init(ProjParams params) : super.init(params) {
-    var lat0 = params.lat0;
+    var lat0 = params.lat0!;
     var long0 = params.long0;
     x0 = params.x0;
     y0 = params.y0;
@@ -29,12 +29,12 @@ class SwissObliqueMercatorProjection extends Projection {
     var phy0 = lat0;
     lambda0 = long0;
     var sinPhy0 = math.sin(phy0);
-    var semiMajorAxis = a;
-    var invF = rf;
+    var semiMajorAxis = a!;
+    var invF = rf!;
     var flattening = 1 / invF;
     var e2 = 2 * flattening - math.pow(flattening, 2);
     e = math.sqrt(e2);
-    R = k0 *
+    R = k0! *
         semiMajorAxis *
         math.sqrt(1 - e2) /
         (1 - e2 * math.pow(sinPhy0, 2));
@@ -42,22 +42,22 @@ class SwissObliqueMercatorProjection extends Projection {
     b0 = math.asin(sinPhy0 / alpha);
     var k1 = math.log(math.tan(math.pi / 4 + b0 / 2));
     var k2 = math.log(math.tan(math.pi / 4 + phy0 / 2));
-    var k3 = math.log((1 + e * sinPhy0) / (1 - e * sinPhy0));
-    K = k1 - alpha * k2 + alpha * e / 2 * k3;
+    var k3 = math.log((1 + e! * sinPhy0) / (1 - e! * sinPhy0));
+    K = k1 - alpha * k2 + alpha * e! / 2 * k3;
   }
 
   @override
-  Point forward(Point p) {
-    var Sa1 = math.log(math.tan(math.pi / 4 - p.y / 2));
+  Point? forward(Point? p) {
+    var Sa1 = math.log(math.tan(math.pi / 4 - p!.y! / 2));
     var Sa2 =
-        e / 2 * math.log((1 + e * math.sin(p.y)) / (1 - e * math.sin(p.y)));
+        e! / 2 * math.log((1 + e! * math.sin(p.y!)) / (1 - e! * math.sin(p.y!)));
     var S = -alpha * (Sa1 + Sa2) + K;
 
     // spheric latitude
     var b = 2 * (math.atan(math.exp(S)) - math.pi / 4);
 
     // spheric longitude
-    var I = alpha * (p.x - lambda0);
+    var I = alpha * (p.x! - lambda0);
 
     // psoeudo equatorial rotation
     var rotI = math.atan(math.sin(I) /
@@ -66,15 +66,15 @@ class SwissObliqueMercatorProjection extends Projection {
     var rotB = math.asin(
         math.cos(b0) * math.sin(b) - math.sin(b0) * math.cos(b) * math.cos(I));
 
-    p.y = R / 2 * math.log((1 + math.sin(rotB)) / (1 - math.sin(rotB))) + y0;
-    p.x = R * rotI + x0;
+    p.y = R / 2 * math.log((1 + math.sin(rotB)) / (1 - math.sin(rotB))) + y0!;
+    p.x = R * rotI + x0!;
     return p;
   }
 
   @override
   Point inverse(Point p) {
-    var Y = p.x - x0;
-    var X = p.y - y0;
+    var Y = p.x! - x0!;
+    var X = p.y! - y0!;
 
     var rotI = Y / R;
     var rotB = 2 * (math.atan(math.exp(X / R)) - math.pi / 4);
@@ -97,9 +97,9 @@ class SwissObliqueMercatorProjection extends Projection {
       }
       //S = math.log(math.tan(math.pi / 4 + phy / 2));
       S = 1 / alpha * (math.log(math.tan(math.pi / 4 + b / 2)) - K) +
-          e *
+          e! *
               math.log(
-                  math.tan(math.pi / 4 + math.asin(e * math.sin(phy)) / 2));
+                  math.tan(math.pi / 4 + math.asin(e! * math.sin(phy)) / 2));
       prevPhy = phy;
       phy = 2 * math.atan(math.exp(S)) - math.pi / 2;
     }

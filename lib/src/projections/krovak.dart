@@ -8,33 +8,33 @@ import 'package:proj4dart/src/common/utils.dart' as utils;
 class KrovakProjection extends Projection {
   static final List<String> names = ['Krovak', 'krovak'];
 
-  double lat0;
+  double? lat0;
   double long0;
-  double s45;
-  double s90;
-  double fi0;
-  double e2;
-  double alfa;
-  double uq;
-  double u0;
-  double g;
-  double k1;
-  double k;
-  double n0;
-  double s0;
-  double n;
-  double ro0;
-  double ad;
-  bool czech;
+  late double s45;
+  late double s90;
+  double? fi0;
+  double? e2;
+  late double alfa;
+  late double uq;
+  late double u0;
+  late double g;
+  double? k1;
+  late double k;
+  late double n0;
+  late double s0;
+  late double n;
+  late double ro0;
+  late double ad;
+  bool? czech;
 
   KrovakProjection.init(ProjParams params)
       : lat0 = params.lat0,
         long0 = params.long0,
-        czech = params.map['czech'],
+        czech = params.map['czech'] as bool?,
         super.init(params) {
     a = 6377397.155;
     es = 0.006674372230614;
-    e = math.sqrt(es);
+    e = math.sqrt(es!);
     lat0 ??= 0.863937979737193;
     if (long0 == null || long0.isNaN) {
       long0 = 0.7417649320975901 - 0.308341501185665;
@@ -45,29 +45,29 @@ class KrovakProjection extends Projection {
     s90 = 2 * s45;
     fi0 = lat0;
     e2 = es;
-    e = math.sqrt(e2);
-    alfa = math.sqrt(1 + (e2 * math.pow(math.cos(fi0), 4)) / (1 - e2));
+    e = math.sqrt(e2!);
+    alfa = math.sqrt(1 + (e2! * math.pow(math.cos(fi0!), 4)) / (1 - e2!));
     uq = 1.04216856380474;
-    u0 = math.asin(math.sin(fi0) / alfa);
+    u0 = math.asin(math.sin(fi0!) / alfa);
     g = math.pow(
-        (1 + e * math.sin(fi0)) / (1 - e * math.sin(fi0)), alfa * e / 2);
-    k = math.tan(u0 / 2 + s45) / math.pow(math.tan(fi0 / 2 + s45), alfa) * g;
+        (1 + e! * math.sin(fi0!)) / (1 - e! * math.sin(fi0!)), alfa * e! / 2) as double;
+    k = math.tan(u0 / 2 + s45) / math.pow(math.tan(fi0! / 2 + s45), alfa) * g;
     k1 = k0;
-    n0 = a * math.sqrt(1 - e2) / (1 - e2 * math.pow(math.sin(fi0), 2));
+    n0 = a! * math.sqrt(1 - e2!) / (1 - e2! * math.pow(math.sin(fi0!), 2));
     s0 = 1.37008346281555;
     n = math.sin(s0);
-    ro0 = k1 * n0 / math.tan(s0);
+    ro0 = k1! * n0 / math.tan(s0);
     ad = s90 - uq;
   }
 
   @override
-  Point forward(Point p) {
+  Point? forward(Point? p) {
     double gfi, u, deltav, s, d, eps, ro;
-    var lon = p.x;
-    var lat = p.y;
+    var lon = p!.x!;
+    var lat = p.y!;
     var delta_lon = utils.adjust_lon(lon - long0);
     gfi = math.pow(
-        ((1 + e * math.sin(lat)) / (1 - e * math.sin(lat))), (alfa * e / 2));
+        ((1 + e! * math.sin(lat)) / (1 - e! * math.sin(lat))), (alfa * e! / 2)) as double;
     u = 2 *
         (math.atan(k * math.pow(math.tan(lat / 2 + s45), alfa) / gfi) - s45);
     deltav = -delta_lon * alfa;
@@ -81,7 +81,7 @@ class KrovakProjection extends Projection {
     p.y = ro * math.cos(eps) / 1;
     p.x = ro * math.sin(eps) / 1;
 
-    if (czech == null || !czech) {
+    if (czech == null || !czech!) {
       p.y *= -1;
       p.x *= -1;
     }
@@ -89,19 +89,19 @@ class KrovakProjection extends Projection {
   }
 
   @override
-  Point inverse(Point p) {
-    double u, deltav, s, d, eps, ro, fi1;
+  Point? inverse(Point p) {
+    double? u, deltav, s, d, eps, ro, fi1;
     var ok;
     // revert y, x
     var tmp = p.x;
     p.x = p.y;
     p.y = tmp;
-    if (czech == null || !czech) {
+    if (czech == null || !czech!) {
       p.y *= -1;
       p.x *= -1;
     }
-    ro = math.sqrt(p.x * p.x + p.y * p.y);
-    eps = math.atan2(p.y, p.x);
+    ro = math.sqrt(p.x! * p.x! + p.y! * p.y!);
+    eps = math.atan2(p.y!, p.x!);
     d = eps / math.sin(s0);
     s = 2 *
         (math.atan(math.pow(ro0 / ro, 1 / n) * math.tan(s0 / 2 + s45)) - s45);
@@ -116,10 +116,10 @@ class KrovakProjection extends Projection {
       p.y = 2 *
           (math.atan(math.pow(k, -1 / alfa) *
                   math.pow(math.tan(u / 2 + s45), 1 / alfa) *
-                  math.pow((1 + e * math.sin(fi1)) / (1 - e * math.sin(fi1)),
-                      e / 2)) -
+                  math.pow((1 + e! * math.sin(fi1!)) / (1 - e! * math.sin(fi1)),
+                      e! / 2)) -
               s45);
-      if ((fi1 - p.y).abs() < 0.0000000001) {
+      if ((fi1 - p.y!).abs() < 0.0000000001) {
         ok = 1;
       }
       fi1 = p.y;

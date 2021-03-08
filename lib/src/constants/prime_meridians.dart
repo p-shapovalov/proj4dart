@@ -28,6 +28,6 @@ final _items = {
   'oslo': oslo
 };
 
-double match(String name) {
+double? match(String name) {
   return _items[name];
 }

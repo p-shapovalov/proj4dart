@@ -17,7 +17,7 @@ double adjust_lon(double x) {
   return (x.abs() <= consts.SPI) ? x : (x - (sign(x) * consts.TWO_PI));
 }
 
-int adjust_zone(int zone, double lon) {
+int? adjust_zone(int? zone, double lon) {
   if (zone == null) {
     zone = ((adjust_lon(lon) + math.pi) * 30 / math.pi).floor() + 1;
     if (zone < 0) {
@@ -51,7 +51,7 @@ double atanh(double x) {
   return math.log((x - 1) / (x + 1)) / 2;
 }
 
-List<double> clens_cmplx(List<double> pp, double arg_r, double arg_i) {
+List<double> clens_cmplx(List<double?> pp, double arg_r, double arg_i) {
   var sin_arg_r = math.sin(arg_r);
   var cos_arg_r = math.cos(arg_r);
   var sinh_arg_i = sinh(arg_i);
@@ -60,9 +60,9 @@ List<double> clens_cmplx(List<double> pp, double arg_r, double arg_i) {
   var i = -2 * sin_arg_r * sinh_arg_i;
   var j = pp.length - 1;
   var hr = pp[j];
-  var hi1 = 0.0;
-  var hr1 = 0.0;
-  var hi = 0.0;
+  double? hi1 = 0.0;
+  double? hr1 = 0.0;
+  double? hi = 0.0;
   var hr2;
   var hi2;
   while (--j >= 0) {
@@ -70,22 +70,22 @@ List<double> clens_cmplx(List<double> pp, double arg_r, double arg_i) {
     hi2 = hi1;
     hr1 = hr;
     hi1 = hi;
-    hr = -hr2 + r * hr1 - i * hi1 + pp[j];
+    hr = -hr2 + r * hr1! - i * hi1! + pp[j];
     hi = -hi2 + i * hr1 + r * hi1;
   }
   r = sin_arg_r * cosh_arg_i;
   i = cos_arg_r * sinh_arg_i;
-  return [r * hr - i * hi, r * hi + i * hr];
+  return [r * hr! - i * hi!, r * hi + i * hr];
 }
 
-double clens(List<double> pp, double arg_r) {
+double clens(List<double?> pp, double arg_r) {
   var r = 2 * math.cos(arg_r);
   var i = pp.length - 1;
   var hr1 = pp[i];
-  var hr2 = 0.0;
+  double? hr2 = 0.0;
   var hr;
   while (--i >= 0) {
-    hr = -hr2 + r * hr1 + pp[i];
+    hr = -hr2! + r * hr1! + pp[i]!;
     hr2 = hr1;
     hr1 = hr;
   }
@@ -118,14 +118,14 @@ double fL(double x, double L) {
   return 2 * math.atan(x * math.exp(L)) - consts.HALF_PI;
 }
 
-double gatg(List<double> pp, double B) {
+double gatg(List<double?> pp, double B) {
   var cos_2B = 2 * math.cos(2 * B);
   var i = pp.length - 1;
   var h1 = pp[i];
-  var h2 = 0.0;
+  double? h2 = 0.0;
   var h;
   while (--i >= 0) {
-    h = -h2 + cos_2B * h1 + pp[i];
+    h = -h2! + cos_2B * h1! + pp[i]!;
     h2 = h1;
     h1 = h;
   }
@@ -145,16 +145,16 @@ double hypot(double x, double y) {
   return a * math.sqrt(1 + math.pow(b, 2));
 }
 
-double imlfn(double ml, double e0, double e1, double e2, double e3) {
+double imlfn(double ml, double e0, double? e1, double? e2, double? e3) {
   double phi;
   double dphi;
   phi = ml / e0;
   for (var i = 0; i < 15; i++) {
     dphi = (ml -
             (e0 * phi -
-                e1 * math.sin(2 * phi) +
-                e2 * math.sin(4 * phi) -
-                e3 * math.sin(6 * phi))) /
+                e1! * math.sin(2 * phi) +
+                e2! * math.sin(4 * phi) -
+                e3! * math.sin(6 * phi))) /
         (e0 -
             2 * e1 * math.cos(2 * phi) +
             4 * e2 * math.cos(4 * phi) -
@@ -169,28 +169,28 @@ double imlfn(double ml, double e0, double e1, double e2, double e3) {
 }
 
 Point inverseNadCvt(Point t, Point val, tb, ct) {
-  if ((t.x).isNaN) {
+  if (t.x!.isNaN) {
     return val;
   }
   t.x = tb.x + t.x;
   t.y = tb.y - t.y;
-  var i = 9, tol = 1e-12;
+  var i = 9, tol = 1e-12 as int;
   Point dif;
   Point del;
   do {
     del = nad_intr(t, ct);
-    if ((del.x).isNaN) {
+    if (del.x!.isNaN) {
       break;
     }
-    dif = Point(x: t.x - del.x - tb.x, y: t.y + del.y - tb.y);
-    t.x -= dif.x;
-    t.y -= dif.y;
-  } while (i-- != 0 && (dif.x).abs() > tol && (dif.y).abs() > tol);
+    dif = Point(x: t.x! - del.x! - tb.x, y: t.y! + del.y! - tb.y);
+    t.x -= dif.x!;
+    t.y -= dif.y!;
+  } while (i-- != 0 && dif.x!.abs() > tol && dif.y!.abs() > tol);
   if (i < 0) {
     return val;
   }
-  val.x = adjust_lon(t.x + ct.ll[0]);
-  val.y = t.y + ct.ll[1];
+  val.x = adjust_lon(t.x! + ct.ll[0]);
+  val.y = t.y! + ct.ll[1];
   return val;
 }
 
@@ -242,7 +242,7 @@ double iqsfnz(double eccent, double q) {
   return double.nan;
 }
 
-double latiso(double eccent, double phi, double sinphi) {
+double latiso(double? eccent, double phi, double sinphi) {
   if (phi.abs() > consts.HALF_PI) {
     return double.nan;
   }
@@ -252,7 +252,7 @@ double latiso(double eccent, double phi, double sinphi) {
   if (phi == -1 * consts.HALF_PI) {
     return double.negativeInfinity;
   }
-  var con = eccent * sinphi;
+  var con = eccent! * sinphi;
   return math.log(math.tan((consts.HALF_PI + phi) / 2)) +
       eccent * math.log((1 - con) / (1 + con)) / 2;
 }
@@ -277,20 +277,20 @@ double msfnz(double eccent, double sinphi, double cosphi) {
 
 Point nad_cvt(Point pin, bool inverse, ct) {
   var val = Point(x: double.nan, y: double.nan);
-  if (pin.x.isNaN) {
+  if (pin.x!.isNaN) {
     return val;
   }
   var tb = Point(x: pin.x, y: pin.y);
   tb.x -= ct.ll[0];
   tb.y -= ct.ll[1];
-  tb.x = adjust_lon(tb.x - math.pi) + math.pi;
+  tb.x = adjust_lon(tb.x! - math.pi) + math.pi;
   var t = nad_intr(tb, ct);
   if (inverse) {
     return inverseNadCvt(t, val, tb, ct);
   } else {
-    if (!t.x.isNaN) {
-      val.x = pin.x - t.x;
-      val.y = pin.y + t.y;
+    if (!t.x!.isNaN) {
+      val.x = pin.x! - t.x!;
+      val.y = pin.y! + t.y!;
     }
   }
   return val;
@@ -300,8 +300,8 @@ Point nad_intr(pin, ct) {
   // force computation by decreasing by 1e-7 to be as closed as possible
   // from computation under C:C++ by leveraging rounding problems ...
   var t = Point(x: (pin.x - 1e-7) / ct.del[0], y: (pin.y - 1e-7) / ct.del[1]);
-  var indx = Point(x: (t.x).floorToDouble(), y: (t.y).floorToDouble());
-  var frct = Point(x: t.x - 1 * indx.x, y: t.y - 1 * indx.y);
+  var indx = Point(x: t.x!.floorToDouble(), y: t.y!.floorToDouble());
+  Point? frct = Point(x: t.x! - 1 * indx.x!, y: t.y! - 1 * indx.y!);
   var val = Point(x: double.nan, y: double.nan);
   var temp = nadInterBreakout(indx, frct, 'x', 0, ct);
   if (temp) {
@@ -317,7 +317,7 @@ Point nad_intr(pin, ct) {
   } else {
     return val;
   }
-  var inx = (indx.y * ct.lim[0]) + indx.x;
+  var inx = (indx.y! * ct.lim[0]) + indx.x!;
   var f00 = Point(x: ct.cvs[inx][0], y: ct.cvs[inx][1]);
   inx++;
   var f10 = Point(x: ct.cvs[inx][0], y: ct.cvs[inx][1]);
@@ -325,12 +325,12 @@ Point nad_intr(pin, ct) {
   var f11 = Point(x: ct.cvs[inx][0], y: ct.cvs[inx][1]);
   inx--;
   var f01 = Point(x: ct.cvs[inx][0], y: ct.cvs[inx][1]);
-  var m11 = frct.x * frct.y,
-      m10 = frct.x * (1 - frct.y),
-      m00 = (1 - frct.x) * (1 - frct.y),
-      m01 = (1 - frct.x) * frct.y;
-  val.x = (m00 * f00.x + m10 * f10.x + m01 * f01.x + m11 * f11.x);
-  val.y = (m00 * f00.y + m10 * f10.y + m01 * f01.y + m11 * f11.y);
+  var m11 = frct!.x! * frct.y!,
+      m10 = frct.x! * (1 - frct.y!),
+      m00 = (1 - frct.x!) * (1 - frct.y!),
+      m01 = (1 - frct.x!) * frct.y!;
+  val.x = (m00 * f00.x! + m10 * f10.x! + m01 * f01.x! + m11 * f11.x!);
+  val.y = (m00 * f00.y! + m10 * f10.y! + m01 * f01.y! + m11 * f11.y!);
   return val;
 }
 
@@ -377,7 +377,7 @@ double phi2z(double eccent, double ts) {
   return -9999.0;
 }
 
-List<double> pj_enfn(double es) {
+List<double?> pj_enfn(double es) {
   var C00 = 1.0;
   var C02 = 0.25;
   var C04 = 0.046875;
@@ -390,7 +390,7 @@ List<double> pj_enfn(double es) {
   var C66 = 0.36458333333333333333;
   var C68 = 0.00569661458333333333;
   var C88 = 0.3076171875;
-  var en = List<double>(5);
+  var en = List<double?>.generate(5, (i) => null);
   en[0] = C00 - es * (C02 + es * (C04 + es * (C06 + es * C08)));
   en[1] = es * (C22 - es * (C04 + es * (C06 + es * C08)));
   var t = es * es;
@@ -401,7 +401,7 @@ List<double> pj_enfn(double es) {
   return en;
 }
 
-double pj_inv_mlfn(double arg, double es, List<double> en) {
+double pj_inv_mlfn(double arg, double es, List<double?>? en) {
   var MAX_ITER = 20;
   var k = 1 / (1 - es);
   var phi = arg;
@@ -411,7 +411,7 @@ double pj_inv_mlfn(double arg, double es, List<double> en) {
     var t = 1 - es * s * s;
     //t = this.pj_mlfn(phi, s, Math.cos(phi), en) - arg;
     //phi -= t * (t * Math.sqrt(t)) * k;
-    t = (pj_mlfn(phi, s, math.cos(phi), en) - arg) * (t * math.sqrt(t)) * k;
+    t = (pj_mlfn(phi, s, math.cos(phi), en!) - arg) * (t * math.sqrt(t)) * k;
     phi -= t;
     if (t.abs() < consts.EPSLN) {
       return phi;
@@ -421,11 +421,11 @@ double pj_inv_mlfn(double arg, double es, List<double> en) {
   return phi;
 }
 
-double pj_mlfn(double phi, double sphi, double cphi, List<double> en) {
+double pj_mlfn(double phi, double sphi, double cphi, List<double?> en) {
   cphi *= sphi;
   sphi *= sphi;
-  return (en[0] * phi -
-      cphi * (en[1] + sphi * (en[2] + sphi * (en[3] + sphi * en[4]))));
+  return (en[0]! * phi -
+      cphi * (en[1]! + sphi * (en[2]! + sphi * (en[3]! + sphi * en[4]!))));
 }
 
 double qsfnz(double eccent, double sinphi) {
@@ -451,7 +451,7 @@ double sinh(double x) {
 }
 
 double srat(double esinp, double exp) {
-  return (math.pow((1 - esinp) / (1 + esinp), exp));
+  return math.pow((1 - esinp) / (1 + esinp), exp) as double;
 }
 
 double tanh(double x) {
@@ -474,11 +474,11 @@ Point toPoint(List<double> array) {
 double tsfnz(double eccent, double phi, double sinphi) {
   var con = eccent * sinphi;
   var com = 0.5 * eccent;
-  con = math.pow(((1 - con) / (1 + con)), com);
+  con = math.pow(((1 - con) / (1 + con)), com) as double;
   return (math.tan(0.5 * (consts.HALF_PI - phi)) / con);
 }
 
-void checkCoord(double coord) {
+void checkCoord(double? coord) {
   if (coord != null && coord.isFinite) {
     return;
   }
@@ -490,8 +490,8 @@ void checkSanity(Point point) {
   checkCoord(point.y);
 }
 
-Point adjust_axis(Projection crs, bool denorm, Point point) {
-  var xin = point.x, yin = point.y, zin = point.z ?? 0.0;
+Point? adjust_axis(Projection crs, bool denorm, Point point) {
+  double? xin = point.x, yin = point.y, zin = point.z ?? 0.0;
   var v, t, i;
   var pointString = '''
       {
@@ -515,14 +515,14 @@ Point adjust_axis(Projection crs, bool denorm, Point point) {
     }
     if (i == 0) {
       v = xin;
-      if ('ew'.contains(crs.axis[i])) {
+      if ('ew'.contains(crs.axis![i])) {
         t = 'x';
       } else {
         t = 'y';
       }
     } else if (i == 1) {
       v = yin;
-      if ('ns'.contains(crs.axis[i])) {
+      if ('ns'.contains(crs.axis![i])) {
         t = 'y';
       } else {
         t = 'x';
@@ -531,7 +531,7 @@ Point adjust_axis(Projection crs, bool denorm, Point point) {
       v = zin;
       t = 'z';
     }
-    switch (crs.axis[i]) {
+    switch (crs.axis![i]) {
       case 'e':
       case 'w':
       case 'n':

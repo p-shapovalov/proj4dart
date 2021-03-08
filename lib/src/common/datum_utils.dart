@@ -8,22 +8,22 @@ bool compareDatums(Datum source, Datum dest) {
   if (source.datumType != dest.datumType) {
     return false; // false, datums are not equal
   } else if (source.a != dest.a ||
-      (source.es - dest.es).abs() > 0.000000000050) {
+      (source.es! - dest.es!).abs() > 0.000000000050) {
     // the tolerance for es is to ensure that GRS80 and WGS84
     // are considered identical
     return false;
   } else if (source.datumType == consts.PJD_3PARAM) {
-    return (source.datumParams[0] == dest.datumParams[0] &&
-        source.datumParams[1] == dest.datumParams[1] &&
-        source.datumParams[2] == dest.datumParams[2]);
+    return (source.datumParams![0] == dest.datumParams![0] &&
+        source.datumParams![1] == dest.datumParams![1] &&
+        source.datumParams![2] == dest.datumParams![2]);
   } else if (source.datumType == consts.PJD_7PARAM) {
-    return (source.datumParams[0] == dest.datumParams[0] &&
-        source.datumParams[1] == dest.datumParams[1] &&
-        source.datumParams[2] == dest.datumParams[2] &&
-        source.datumParams[3] == dest.datumParams[3] &&
-        source.datumParams[4] == dest.datumParams[4] &&
-        source.datumParams[5] == dest.datumParams[5] &&
-        source.datumParams[6] == dest.datumParams[6]);
+    return (source.datumParams![0] == dest.datumParams![0] &&
+        source.datumParams![1] == dest.datumParams![1] &&
+        source.datumParams![2] == dest.datumParams![2] &&
+        source.datumParams![3] == dest.datumParams![3] &&
+        source.datumParams![4] == dest.datumParams![4] &&
+        source.datumParams![5] == dest.datumParams![5] &&
+        source.datumParams![6] == dest.datumParams![6]);
   } else {
     return true; // datums are equal
   }
@@ -42,7 +42,7 @@ bool compareDatums(Datum source, Datum dest) {
 ///
 Point geodeticToGeocentric(Point p, es, a) {
   var Longitude = p.x;
-  var Latitude = p.y;
+  var Latitude = p.y!;
   var Height = p.z ?? 0; // Z value not always supplied
 
   var Rn; // Earth radius at location
@@ -67,7 +67,7 @@ Point geodeticToGeocentric(Point p, es, a) {
     return Point.withZ(x: double.infinity, y: double.infinity, z: p.z);
   }
 
-  if (Longitude > math.pi) {
+  if (Longitude! > math.pi) {
     Longitude -= (2 * math.pi);
   }
   Sin_Lat = math.sin(Latitude);
@@ -80,7 +80,7 @@ Point geodeticToGeocentric(Point p, es, a) {
       z: ((Rn * (1 - es)) + Height) * Sin_Lat);
 } // cs_ge
 
-Point geocentricToGeodetic(Point p, double es, double a, double b) {
+Point geocentricToGeodetic(Point p, double? es, double a, double? b) {
   // local defintions and variables
   // end-criterium of loop, accuracy of sin(Latitude)
   var genau = 1e-12;
@@ -102,8 +102,8 @@ Point geocentricToGeodetic(Point p, double es, double a, double b) {
       SDPHI; // end-criterium: addition-theorem of sin(Latitude(iter)-Latitude(iter-1))
   var iter; // # of continous iteration, max. 30 is always enough (s.a.)
 
-  var X = p.x;
-  var Y = p.y;
+  var X = p.x!;
+  var Y = p.y!;
   var Z = p.z ?? 0.0; //Z value not always supplied
   double Longitude;
   double Latitude;
@@ -121,7 +121,7 @@ Point geocentricToGeodetic(Point p, double es, double a, double b) {
     // of ellipsoid (=center of mass), Latitude becomes PI/2
     if (RR / a < genau) {
       Latitude = consts.HALF_PI;
-      Height = -b;
+      Height = -b!;
       return Point.withZ(x: p.x, y: p.y, z: p.z);
     }
   } else {
@@ -139,7 +139,7 @@ Point geocentricToGeodetic(Point p, double es, double a, double b) {
 
   CT = Z / RR;
   ST = P / RR;
-  RX = 1.0 / math.sqrt(1.0 - es * (2.0 - es) * ST * ST);
+  RX = 1.0 / math.sqrt(1.0 - es! * (2.0 - es) * ST * ST);
   CPHI0 = ST * (1.0 - es) * RX;
   SPHI0 = CT * RX;
   iter = 0;
@@ -173,16 +173,16 @@ Point geocentricToGeodetic(Point p, double es, double a, double b) {
 /// passed back and forth by reference rather than by value.
 /// Other point classes may be used as long as they have
 /// x and y properties, which will get modified in the transform method.
-Point geocentricToWgs84(Point p, int datumType, List<double> datumParams) {
+Point? geocentricToWgs84(Point p, int? datumType, List<double>? datumParams) {
   if (datumType == consts.PJD_3PARAM) {
     // if( x[io] === HUGE_VAL )
     // continue;
     return Point.withZ(
-        x: p.x + datumParams[0],
-        y: p.y + datumParams[1],
-        z: p.z != null ? p.z + datumParams[2] : 0.0);
+        x: p.x! + datumParams![0],
+        y: p.y! + datumParams[1],
+        z: p.z != null ? p.z! + datumParams[2] : 0.0);
   } else if (datumType == consts.PJD_7PARAM) {
-    var Dx_BF = datumParams[0];
+    var Dx_BF = datumParams![0];
     var Dy_BF = datumParams[1];
     var Dz_BF = datumParams[2];
     var Rx_BF = datumParams[3];
@@ -193,9 +193,9 @@ Point geocentricToWgs84(Point p, int datumType, List<double> datumParams) {
     // continue;
     p.z = p.z ?? 0.0;
     return Point.withZ(
-        x: M_BF * (p.x - Rz_BF * p.y + Ry_BF * p.z) + Dx_BF,
-        y: M_BF * (Rz_BF * p.x + p.y - Rx_BF * p.z) + Dy_BF,
-        z: M_BF * (-Ry_BF * p.x + Rx_BF * p.y + p.z) + Dz_BF);
+        x: M_BF * (p.x! - Rz_BF * p.y! + Ry_BF * p.z!) + Dx_BF,
+        y: M_BF * (Rz_BF * p.x! + p.y! - Rx_BF * p.z!) + Dy_BF,
+        z: M_BF * (-Ry_BF * p.x! + Rx_BF * p.y! + p.z!) + Dz_BF);
   }
   return null;
 } // cs_geocentric_to_wgs84
@@ -203,26 +203,26 @@ Point geocentricToWgs84(Point p, int datumType, List<double> datumParams) {
 /// pj_geocentic_from_wgs84()
 /// coordinate system definition,
 /// point to transform in geocentric coordinates (x,y,z)
-Point geocentricFromWgs84(Point p, int datumType, List<double> datumParams) {
+Point? geocentricFromWgs84(Point p, int? datumType, List<double>? datumParams) {
   if (datumType == consts.PJD_3PARAM) {
     //if( x[io] === HUGE_VAL )
     // continue;
     return Point.withZ(
-      x: p.x - datumParams[0],
-      y: p.y - datumParams[1],
-      z: p.z - datumParams[2],
+      x: p.x! - datumParams![0],
+      y: p.y! - datumParams[1],
+      z: p.z! - datumParams[2],
     );
   } else if (datumType == consts.PJD_7PARAM) {
-    var Dx_BF = datumParams[0];
+    var Dx_BF = datumParams![0];
     var Dy_BF = datumParams[1];
     var Dz_BF = datumParams[2];
     var Rx_BF = datumParams[3];
     var Ry_BF = datumParams[4];
     var Rz_BF = datumParams[5];
     var M_BF = datumParams[6];
-    var x_tmp = (p.x - Dx_BF) / M_BF;
-    var y_tmp = (p.y - Dy_BF) / M_BF;
-    var z_tmp = (p.z - Dz_BF) / M_BF;
+    var x_tmp = (p.x! - Dx_BF) / M_BF;
+    var y_tmp = (p.y! - Dy_BF) / M_BF;
+    var z_tmp = (p.z! - Dz_BF) / M_BF;
     //if( x[io] === HUGE_VAL )
     // continue;
 

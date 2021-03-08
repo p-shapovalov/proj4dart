@@ -12,36 +12,36 @@ class ExtendedTransverseMercatorProjection extends Projection {
     'etmerc'
   ];
 
-  double x0;
-  double y0;
-  double long0;
-  double lat0;
-  double Qn;
-  double Zb;
-  List<double> cgb;
-  List<double> cbg;
-  List<double> utg;
-  List<double> gtu;
+  double? x0;
+  double? y0;
+  double? long0;
+  double? lat0;
+  late double Qn;
+  late double Zb;
+  late List<double?> cgb;
+  late List<double?> cbg;
+  late List<double?> utg;
+  late List<double?> gtu;
 
   ExtendedTransverseMercatorProjection.init(ProjParams params)
       : super.init(params) {
     es = params.es;
-    if (es == null || es <= 0) {
+    if (es == null || es! <= 0) {
       throw Exception('Incorrect elliptical usage');
     }
     x0 = x0 ?? 0;
     y0 = y0 ?? 0;
-    if (long0 == null || long0.isNaN) {
+    if (long0 == null || long0!.isNaN) {
       long0 = 0;
     }
     lat0 = lat0 ?? 0;
 
-    cgb = List<double>(6);
-    cbg = List<double>(6);
-    utg = List<double>(6);
-    gtu = List<double>(6);
+    cgb = List<double?>.filled(6, null);
+    cbg = List<double?>.filled(6, null);
+    utg = List<double?>.filled(6, null);
+    gtu = List<double?>.filled(6, null);
 
-    var f = es / (1 + math.sqrt(1 - es));
+    var f = es! / (1 + math.sqrt(1 - es!));
     var n = f / (2 - f);
     var np = n;
 
@@ -94,8 +94,8 @@ class ExtendedTransverseMercatorProjection extends Projection {
     cgb[5] = np * (601676 / 22275);
     cbg[5] = np * (444337 / 155925);
 
-    np = math.pow(n, 2);
-    Qn = k0 / (1 + n) * (1 + np * (1 / 4 + np * (1 / 64 + np / 256)));
+    np = math.pow(n, 2) as double;
+    Qn = k0! / (1 + n) * (1 + np * (1 / 4 + np * (1 / 64 + np / 256)));
 
     utg[0] = n *
         (-0.5 +
@@ -150,14 +150,14 @@ class ExtendedTransverseMercatorProjection extends Projection {
     utg[5] = np * (-20648693 / 638668800);
     gtu[5] = np * (212378941 / 319334400);
 
-    var Z = utils.gatg(cbg, lat0);
+    var Z = utils.gatg(cbg, lat0!);
     Zb = -Qn * (Z + utils.clens(gtu, 2 * Z));
   }
 
   @override
-  Point forward(Point p) {
-    var Ce = utils.adjust_lon(p.x - long0);
-    var Cn = p.y;
+  Point? forward(Point? p) {
+    var Ce = utils.adjust_lon(p!.x! - long0!);
+    var Cn = p.y!;
 
     Cn = utils.gatg(cbg, Cn);
     var sin_Cn = math.sin(Cn);
@@ -178,8 +178,8 @@ class ExtendedTransverseMercatorProjection extends Projection {
     double y;
 
     if (Ce.abs() <= 2.623395162778) {
-      x = a * (Qn * Ce) + x0;
-      y = a * (Qn * Cn + Zb) + y0;
+      x = a! * (Qn * Ce) + x0!;
+      y = a! * (Qn * Cn + Zb) + y0!;
     } else {
       x = double.infinity;
       y = double.infinity;
@@ -193,8 +193,8 @@ class ExtendedTransverseMercatorProjection extends Projection {
 
   @override
   Point inverse(Point p) {
-    var Ce = (p.x - x0) * (1 / a);
-    var Cn = (p.y - y0) * (1 / a);
+    var Ce = (p.x! - x0!) * (1 / a!);
+    var Cn = (p.y! - y0!) * (1 / a!);
 
     Cn = (Cn - Zb) / Qn;
     Ce = Ce / Qn;
@@ -217,7 +217,7 @@ class ExtendedTransverseMercatorProjection extends Projection {
       Cn = math.atan2(sin_Cn * cos_Ce, utils.hypot(sin_Ce, cos_Ce * cos_Cn));
       Ce = math.atan2(sin_Ce, cos_Ce * cos_Cn);
 
-      lon = utils.adjust_lon(Ce + long0);
+      lon = utils.adjust_lon(Ce + long0!);
       lat = utils.gatg(cgb, Cn);
     } else {
       lon = double.infinity;

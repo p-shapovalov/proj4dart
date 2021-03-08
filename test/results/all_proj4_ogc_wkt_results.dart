@@ -9,7 +9,7 @@ Map<String, ProjectAndUnProjectResult> get testResults => Map.from(_testResults)
 
 // We converted point [17.888058560281515, 46.89226406700879] with proj4js which gave us forwardResult
 // Then we transformed back the forwardResult to calculate inverseResult
-final Map<String, ProjectAndUnProjectResult> _testResults = {
+final Map<String, ProjectAndUnProjectResult?> _testResults = {
   'EPSG:3819': ProjectAndUnProjectResult(
       Point(x: 17.889590510079564, y: 46.89133824892714),
       Point(x: 17.888058590372236, y: 46.89226407474856)),

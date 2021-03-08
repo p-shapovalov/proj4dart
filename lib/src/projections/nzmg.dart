@@ -8,17 +8,17 @@ var iterations = 1;
 class NewZealandMapGridProjection extends Projection {
   static final List<String> names = ['New_Zealand_Map_Grid', 'nzmg'];
 
-  double lat0;
+  double? lat0;
   double long0;
-  double x0;
-  double y0;
+  double? x0;
+  double? y0;
 
-  var A = List<double>(11);
-  var B_re = List<double>(7);
-  var B_im = List<double>(7);
-  var C_re = List<double>(7);
-  var C_im = List<double>(7);
-  var D = List<double>(10);
+  var A = List<double?>.filled(11, null);
+  var B_re = List<double?>.filled(7, null);
+  var B_im = List<double?>.filled(7, null);
+  var C_re = List<double?>.filled(7, null);
+  var C_im = List<double?>.filled(7, null);
+  var D = List<double?>.filled(10, null);
 
   NewZealandMapGridProjection.init(ProjParams params)
       : lat0 = params.lat0,
@@ -75,12 +75,12 @@ class NewZealandMapGridProjection extends Projection {
   }
 
   @override
-  Point forward(Point p) {
+  Point? forward(Point? p) {
     int n;
-    var lon = p.x;
-    var lat = p.y;
+    var lon = p!.x!;
+    var lat = p.y!;
 
-    var delta_lat = lat - lat0;
+    var delta_lat = lat - lat0!;
     var delta_lon = lon - long0;
 
     // 1. Calculate d_phi and d_psi    ...                          // and d_lambda
@@ -92,7 +92,7 @@ class NewZealandMapGridProjection extends Projection {
     var d_psi = 0.0;
     for (n = 1; n <= 10; n++) {
       d_phi_n = d_phi_n * d_phi;
-      d_psi = d_psi + A[n] * d_phi_n;
+      d_psi = d_psi + A[n]! * d_phi_n;
     }
 
     // 2. Calculate theta
@@ -112,13 +112,13 @@ class NewZealandMapGridProjection extends Projection {
       th_n_im1 = th_n_im * th_re + th_n_re * th_im;
       th_n_re = th_n_re1;
       th_n_im = th_n_im1;
-      z_re = z_re + B_re[n] * th_n_re - B_im[n] * th_n_im;
-      z_im = z_im + B_im[n] * th_n_re + B_re[n] * th_n_im;
+      z_re = z_re + B_re[n]! * th_n_re - B_im[n]! * th_n_im;
+      z_im = z_im + B_im[n]! * th_n_re + B_re[n]! * th_n_im;
     }
 
     // 4. Calculate easting and northing
-    p.x = (z_im * a) + x0;
-    p.y = (z_re * a) + y0;
+    p.x = (z_im * a!) + x0!;
+    p.y = (z_re * a!) + y0!;
 
     return p;
   }
@@ -126,15 +126,15 @@ class NewZealandMapGridProjection extends Projection {
   @override
   Point inverse(Point p) {
     int n;
-    var x = p.x;
-    var y = p.y;
+    var x = p.x!;
+    var y = p.y!;
 
-    var delta_x = x - x0;
-    var delta_y = y - y0;
+    var delta_x = x - x0!;
+    var delta_y = y - y0!;
 
     // 1. Calculate z
-    var z_re = delta_y / a;
-    var z_im = delta_x / a;
+    var z_re = delta_y / a!;
+    var z_im = delta_x / a!;
 
     // 2a. Calculate theta - first approximation gives km accuracy
     var z_n_re = 1.0;
@@ -149,8 +149,8 @@ class NewZealandMapGridProjection extends Projection {
       z_n_im1 = z_n_im * z_re + z_n_re * z_im;
       z_n_re = z_n_re1;
       z_n_im = z_n_im1;
-      th_re = th_re + C_re[n] * z_n_re - C_im[n] * z_n_im;
-      th_im = th_im + C_im[n] * z_n_re + C_re[n] * z_n_im;
+      th_re = th_re + C_re[n]! * z_n_re - C_im[n]! * z_n_im;
+      th_im = th_im + C_im[n]! * z_n_re + C_re[n]! * z_n_im;
     }
 
     // 2b. Iterate to refine the accuracy of the calculation
@@ -170,8 +170,8 @@ class NewZealandMapGridProjection extends Projection {
         th_n_im1 = th_n_im * th_re + th_n_re * th_im;
         th_n_re = th_n_re1;
         th_n_im = th_n_im1;
-        num_re = num_re + (n - 1) * (B_re[n] * th_n_re - B_im[n] * th_n_im);
-        num_im = num_im + (n - 1) * (B_im[n] * th_n_re + B_re[n] * th_n_im);
+        num_re = num_re + (n - 1) * (B_re[n]! * th_n_re - B_im[n]! * th_n_im);
+        num_im = num_im + (n - 1) * (B_im[n]! * th_n_re + B_re[n]! * th_n_im);
       }
 
       th_n_re = 1.0;
@@ -183,12 +183,12 @@ class NewZealandMapGridProjection extends Projection {
         th_n_im1 = th_n_im * th_re + th_n_re * th_im;
         th_n_re = th_n_re1;
         th_n_im = th_n_im1;
-        den_re = den_re + n * (B_re[n] * th_n_re - B_im[n] * th_n_im);
-        den_im = den_im + n * (B_im[n] * th_n_re + B_re[n] * th_n_im);
+        den_re = den_re! + n * (B_re[n]! * th_n_re - B_im[n]! * th_n_im);
+        den_im = den_im! + n * (B_im[n]! * th_n_re + B_re[n]! * th_n_im);
       }
 
       // Complex division
-      var den2 = den_re * den_re + den_im * den_im;
+      var den2 = den_re! * den_re + den_im! * den_im;
       th_re = (num_re * den_re + num_im * den_im) / den2;
       th_im = (num_im * den_re - num_re * den_im) / den2;
     }
@@ -201,12 +201,12 @@ class NewZealandMapGridProjection extends Projection {
     var d_phi = 0.0;
     for (n = 1; n <= 9; n++) {
       d_psi_n = d_psi_n * d_psi;
-      d_phi = d_phi + D[n] * d_psi_n;
+      d_phi = d_phi + D[n]! * d_psi_n;
     }
 
     // 4. Calculate latitude and longitude
     // d_phi is calcuated in second of arc * 10^-5, so we need to scale back to radians. d_lambda is in radians.
-    var lat = lat0 + (d_phi * consts.SEC_TO_RAD * 1E5);
+    var lat = lat0! + (d_phi * consts.SEC_TO_RAD * 1E5);
     var lon = long0 + d_lambda;
 
     p.x = lon;

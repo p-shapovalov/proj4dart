@@ -18,14 +18,14 @@ class GeocentricProjection extends Projection {
         super.init(params);
 
   @override
-  Point forward(Point p) {
-    var point = datum_utils.geodeticToGeocentric(p, es, a);
+  Point forward(Point? p) {
+    var point = datum_utils.geodeticToGeocentric(p!, es, a);
     return point;
   }
 
   @override
   Point inverse(Point p) {
-    var point = datum_utils.geocentricToGeodetic(p, es, a, b);
+    var point = datum_utils.geocentricToGeodetic(p, es, a!, b);
     return point;
   }
 }

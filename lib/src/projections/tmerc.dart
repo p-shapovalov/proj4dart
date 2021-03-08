@@ -13,12 +13,12 @@ class TransverseMercatorProjection extends Projection {
     'tmerc'
   ];
 
-  double lat0;
+  double? lat0;
   double long0;
-  double x0;
-  double y0;
-  List<double> en;
-  double ml0;
+  double? x0;
+  double? y0;
+  List<double?>? en;
+  late double ml0;
 
   TransverseMercatorProjection.init(ProjParams params)
       : lat0 = params.lat0,
@@ -34,14 +34,14 @@ class TransverseMercatorProjection extends Projection {
     lat0 = lat0 ?? 0.0;
 
     if (es != null) {
-      en = utils.pj_enfn(es);
-      ml0 = utils.pj_mlfn(lat0, math.sin(lat0), math.cos(lat0), en);
+      en = utils.pj_enfn(es!);
+      ml0 = utils.pj_mlfn(lat0!, math.sin(lat0!), math.cos(lat0!), en!);
     }
   }
   @override
-  Point forward(Point p) {
-    var lon = p.x;
-    var lat = p.y;
+  Point? forward(Point? p) {
+    var lon = p!.x!;
+    var lat = p.y!;
 
     var delta_lon = utils.adjust_lon(lon - long0);
     double con;
@@ -56,7 +56,7 @@ class TransverseMercatorProjection extends Projection {
         //...reportError("tmerc:forward: Point projects into infinity");
         return p;
       } else {
-        x = 0.5 * a * k0 * math.log((1 + b) / (1 - b)) + x0;
+        x = 0.5 * a! * k0! * math.log((1 + b) / (1 - b)) + x0!;
         y = cos_phi * math.cos(delta_lon) / math.sqrt(1 - math.pow(b, 2));
         b = y.abs();
 
@@ -75,22 +75,22 @@ class TransverseMercatorProjection extends Projection {
           y = -y;
         }
 
-        y = a * k0 * (y - lat0) + y0;
+        y = a! * k0! * (y - lat0!) + y0!;
       }
     } else {
       var al = cos_phi * delta_lon;
       var als = math.pow(al, 2);
-      var c = ep2 * math.pow(cos_phi, 2);
+      var c = ep2! * math.pow(cos_phi, 2);
       var cs = math.pow(c, 2);
       var tq = cos_phi.abs() > consts.EPSLN ? math.tan(lat) : 0;
       var t = math.pow(tq, 2);
       var ts = math.pow(t, 2);
-      con = 1 - es * math.pow(sin_phi, 2);
+      con = 1 - es! * math.pow(sin_phi, 2);
       al = al / math.sqrt(con);
-      var ml = utils.pj_mlfn(lat, sin_phi, cos_phi, en);
+      var ml = utils.pj_mlfn(lat, sin_phi, cos_phi, en!);
 
-      x = a *
-              (k0 *
+      x = a! *
+              (k0! *
                   al *
                   (1 +
                       als /
@@ -111,10 +111,10 @@ class TransverseMercatorProjection extends Projection {
                                               179 * ts -
                                               ts * t -
                                               479 * t))))) +
-          x0;
+          x0!;
 
-      y = a *
-              (k0 *
+      y = a! *
+              (k0! *
                   (ml -
                       ml0 +
                       sin_phi *
@@ -141,7 +141,7 @@ class TransverseMercatorProjection extends Projection {
                                                       543 * ts -
                                                       ts * t -
                                                       3111 * t)))))) +
-          y0;
+          y0!;
     }
 
     p.x = x;
@@ -154,13 +154,13 @@ class TransverseMercatorProjection extends Projection {
   Point inverse(Point p) {
     double con, phi;
     double lat, lon;
-    var x = (p.x - x0) * (1 / a);
-    var y = (p.y - y0) * (1 / a);
+    var x = (p.x! - x0!) * (1 / a!);
+    var y = (p.y! - y0!) * (1 / a!);
 
     if (es == null) {
-      var f = math.exp(x / k0);
+      var f = math.exp(x / k0!);
       var g = 0.5 * (f - 1 / f);
-      var temp = lat0 + y / k0;
+      var temp = lat0! + y / k0!;
       var h = math.cos(temp);
       con = math.sqrt((1 - math.pow(h, 2)) / (1 + math.pow(g, 2)));
       lat = math.asin(con);
@@ -176,24 +176,24 @@ class TransverseMercatorProjection extends Projection {
       }
     } else {
       // ellipsoidal form
-      con = ml0 + y / k0;
-      phi = utils.pj_inv_mlfn(con, es, en);
+      con = ml0 + y / k0!;
+      phi = utils.pj_inv_mlfn(con, es!, en);
 
       if (phi.abs() < consts.HALF_PI) {
         var sin_phi = math.sin(phi);
         var cos_phi = math.cos(phi);
         var tan_phi = cos_phi.abs() > consts.EPSLN ? math.tan(phi) : 0;
-        var c = ep2 * math.pow(cos_phi, 2);
+        var c = ep2! * math.pow(cos_phi, 2);
         var cs = math.pow(c, 2);
         var t = math.pow(tan_phi, 2);
         var ts = math.pow(t, 2);
-        con = 1 - es * math.pow(sin_phi, 2);
-        var d = x * math.sqrt(con) / k0;
+        con = 1 - es! * math.pow(sin_phi, 2);
+        var d = x * math.sqrt(con) / k0!;
         var ds = math.pow(d, 2);
         con = con * tan_phi;
 
         lat = phi -
-            (con * ds / (1 - es)) *
+            (con * ds / (1 - es!)) *
                 0.5 *
                 (1 -
                     ds /

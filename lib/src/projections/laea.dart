@@ -25,35 +25,35 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
   static const EQUIT = 3;
   static const OBLIQ = 4;
 
-  double lat0;
+  double? lat0;
   double long0;
-  double x0;
-  double y0;
-  double phi0;
-  int mode;
-  List<double> apa;
-  double qp, mmf, dd, rq, xmf, ymf, sinb1, cosb1, sinph0, cosph0;
+  double? x0;
+  double? y0;
+  double? phi0;
+  int? mode;
+  late List<double?> apa;
+  double? qp, mmf, dd, rq, xmf, ymf, sinb1, cosb1, sinph0, cosph0;
 
   LambertAzimuthalEqualAreaProjection.init(ProjParams params)
       : lat0 = params.lat0,
         long0 = params.long0,
         x0 = params.x0,
         y0 = params.y0,
-        phi0 = params.map['phi0'],
+        phi0 = params.map['phi0'] as double?,
         super.init(params) {
-    var t = lat0.abs();
+    var t = lat0!.abs();
     if ((t - consts.HALF_PI).abs() < consts.EPSLN) {
-      mode = lat0 < 0 ? S_POLE : N_POLE;
+      mode = lat0! < 0 ? S_POLE : N_POLE;
     } else if (t.abs() < consts.EPSLN) {
       mode = EQUIT;
     } else {
       mode = OBLIQ;
     }
-    if (es > 0) {
+    if (es! > 0) {
       var sinphi;
-      qp = utils.qsfnz(e, 1);
-      mmf = 0.5 / (1 - es);
-      apa = _authset(es);
+      qp = utils.qsfnz(e!, 1);
+      mmf = 0.5 / (1 - es!);
+      apa = _authset(es!);
       switch (mode) {
         case N_POLE:
           dd = 1;
@@ -62,45 +62,46 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
           dd = 1;
           break;
         case EQUIT:
-          rq = math.sqrt(0.5 * qp);
-          dd = 1 / rq;
+          rq = math.sqrt(0.5 * qp!);
+          dd = 1 / rq!;
           xmf = 1;
-          ymf = 0.5 * qp;
+          ymf = 0.5 * qp!;
           break;
         case OBLIQ:
-          rq = math.sqrt(0.5 * qp);
-          sinphi = math.sin(lat0);
-          sinb1 = utils.qsfnz(e, sinphi) / qp;
-          cosb1 = math.sqrt(1 - sinb1 * sinb1);
-          dd = math.cos(lat0) /
-              (math.sqrt(1 - es * sinphi * sinphi) * rq * cosb1);
-          ymf = (xmf = rq) / dd;
-          xmf *= dd;
+          rq = math.sqrt(0.5 * qp!);
+          sinphi = math.sin(lat0!);
+          sinb1 = utils.qsfnz(e!, sinphi) / qp!;
+          cosb1 = math.sqrt(1 - sinb1! * sinb1!);
+          dd = math.cos(lat0!) /
+              (math.sqrt(1 - es! * sinphi * sinphi) * rq! * cosb1!);
+          ymf = (xmf = rq)! / dd!;
+          xmf = xmf! * dd!;
           break;
       }
     } else {
       if (mode == OBLIQ) {
-        sinph0 = math.sin(lat0);
-        cosph0 = math.cos(lat0);
+        sinph0 = math.sin(lat0!);
+        cosph0 = math.cos(lat0!);
       }
     }
   }
 
   @override
-  Point forward(Point p) {
-    double x, y, coslam, sinlam, sinphi, q, sinb, cosb, b, cosphi;
-    var lam = p.x;
+  Point? forward(Point? p) {
+    late double x, y;
+    double coslam, sinlam, sinphi, q, sinb, cosb, b, cosphi;
+    var lam = p!.x;
     var phi = p.y;
 
     lam = utils.adjust_lon(lam - long0);
-    if (sphere != null && sphere) {
-      sinphi = math.sin(phi);
+    if (sphere != null && sphere!) {
+      sinphi = math.sin(phi!);
       cosphi = math.cos(phi);
       coslam = math.cos(lam);
       if (mode == OBLIQ || mode == EQUIT) {
         y = (mode == EQUIT)
             ? 1 + cosphi * coslam
-            : 1 + sinph0 * sinphi + cosph0 * cosphi * coslam;
+            : 1 + sinph0! * sinphi + cosph0! * cosphi * coslam;
         if (y <= consts.EPSLN) {
           return null;
         }
@@ -108,13 +109,13 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
         x = y * cosphi * math.sin(lam);
         y *= (mode == EQUIT)
             ? sinphi
-            : cosph0 * sinphi - sinph0 * cosphi * coslam;
+            : cosph0! * sinphi - sinph0! * cosphi * coslam;
       } else if (mode == N_POLE || mode == S_POLE) {
         if (mode == N_POLE) {
           coslam = -coslam;
         }
 
-        if (phi0 != null && (phi + phi0).abs() < consts.EPSLN) {
+        if (phi0 != null && (phi + phi0!).abs() < consts.EPSLN) {
           return null;
         }
         y = consts.FORTPI - phi * 0.5;
@@ -128,26 +129,26 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
       b = 0;
       coslam = math.cos(lam);
       sinlam = math.sin(lam);
-      sinphi = math.sin(phi);
-      q = utils.qsfnz(e, sinphi);
+      sinphi = math.sin(phi!);
+      q = utils.qsfnz(e!, sinphi);
       if (mode == OBLIQ || mode == EQUIT) {
-        sinb = q / qp;
+        sinb = q / qp!;
         cosb = math.sqrt(1 - sinb * sinb);
       }
       switch (mode) {
         case OBLIQ:
-          b = 1 + sinb1 * sinb + cosb1 * cosb * coslam;
+          b = 1 + sinb1! * sinb + cosb1! * cosb * coslam;
           break;
         case EQUIT:
           b = 1 + cosb * coslam;
           break;
         case N_POLE:
           b = consts.HALF_PI + phi;
-          q = qp - q;
+          q = qp! - q;
           break;
         case S_POLE:
           b = phi - consts.HALF_PI;
-          q = qp + q;
+          q = qp! + q;
           break;
       }
       if (b.abs() < consts.EPSLN) {
@@ -158,11 +159,11 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
         case EQUIT:
           b = math.sqrt(2 / b);
           if (mode == OBLIQ) {
-            y = ymf * b * (cosb1 * sinb - sinb1 * cosb * coslam);
+            y = ymf! * b * (cosb1! * sinb - sinb1! * cosb * coslam);
           } else {
-            y = (b = math.sqrt(2 / (1 + cosb * coslam))) * sinb * ymf;
+            y = (b = math.sqrt(2 / (1 + cosb * coslam))) * sinb * ymf!;
           }
-          x = xmf * b * cosb * sinlam;
+          x = xmf! * b * cosb * sinlam;
           break;
         case N_POLE:
         case S_POLE:
@@ -176,19 +177,19 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
       }
     }
 
-    p.x = a * x + x0;
-    p.y = a * y + y0;
+    p.x = a! * x + x0!;
+    p.y = a! * y + y0!;
     return p;
   }
 
   @override
-  Point inverse(Point p) {
-    p.x -= x0;
-    p.y -= y0;
-    var x = p.x / a;
-    var y = p.y / a;
-    double lam, phi, cCe, sCe, q, rho, ab;
-    if (sphere != null && sphere) {
+  Point? inverse(Point p) {
+    p.x -= x0!;
+    p.y -= y0!;
+    var x = p.x! / a!;
+    var y = p.y! / a!;
+    double? lam, phi, cCe, sCe, q, rho, ab;
+    if (sphere != null && sphere!) {
       double cosz = 0.0, rh, sinz = 0.0;
 
       rh = math.sqrt(x * x + y * y);
@@ -209,10 +210,10 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
           break;
         case OBLIQ:
           phi = (rh.abs() <= consts.EPSLN)
-              ? phi0
-              : math.asin(cosz * sinph0 + y * sinz * cosph0 / rh);
-          x *= sinz * cosph0;
-          y = (cosz - math.sin(phi) * sinph0) * rh;
+              ? phi0!
+              : math.asin(cosz * sinph0! + y * sinz * cosph0! / rh);
+          x *= sinz * cosph0!;
+          y = (cosz - math.sin(phi) * sinph0!) * rh;
           break;
         case N_POLE:
           y = -y;
@@ -226,24 +227,24 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
     } else {
       ab = 0;
       if (mode == OBLIQ || mode == EQUIT) {
-        x /= dd;
-        y *= dd;
+        x /= dd!;
+        y *= dd!;
         rho = math.sqrt(x * x + y * y);
         if (rho < consts.EPSLN) {
           p.x = 0.0;
-          p.y = phi0;
+          p.y = phi0!;
           return p;
         }
-        sCe = 2 * math.asin(0.5 * rho / rq);
+        sCe = 2 * math.asin(0.5 * rho / rq!);
         cCe = math.cos(sCe);
         x *= (sCe = math.sin(sCe));
         if (mode == OBLIQ) {
-          ab = cCe * sinb1 + y * sCe * cosb1 / rho;
-          q = qp * ab;
-          y = rho * cosb1 * cCe - y * sinb1 * sCe;
+          ab = cCe * sinb1! + y * sCe * cosb1! / rho;
+          q = qp! * ab;
+          y = rho * cosb1! * cCe - y * sinb1! * sCe;
         } else {
           ab = y * sCe / rho;
-          q = qp * ab;
+          q = qp! * ab;
           y = rho * cCe;
         }
       } else if (mode == N_POLE || mode == S_POLE) {
@@ -253,10 +254,10 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
         q = (x * x + y * y);
         if (q == null) {
           p.x = 0.0;
-          p.y = phi0;
+          p.y = phi0!;
           return p;
         }
-        ab = 1 - q / qp;
+        ab = 1 - q / qp!;
         if (mode == S_POLE) {
           ab = -ab;
         }
@@ -270,9 +271,9 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
     return p;
   }
 
-  List<double> _authset(double es) {
+  List<double?> _authset(double es) {
     double t;
-    var APA = List<double>(3);
+    var APA = List<double>.filled(3, 0);
     APA[0] = es * P00;
     t = es * es;
     APA[0] += t * P01;
@@ -284,11 +285,11 @@ class LambertAzimuthalEqualAreaProjection extends Projection {
     return APA;
   }
 
-  double _authlat(double beta, List<double> APA) {
+  double _authlat(double beta, List<double?> APA) {
     var t = beta + beta;
     return (beta +
-        APA[0] * math.sin(t) +
-        APA[1] * math.sin(t + t) +
-        APA[2] * math.sin(t + t + t));
+        APA[0]! * math.sin(t) +
+        APA[1]! * math.sin(t + t) +
+        APA[2]! * math.sin(t + t + t));
   }
 }
