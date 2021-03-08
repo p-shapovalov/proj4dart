@@ -10,7 +10,7 @@ dependencies:
   mgrs_dart:
     git:
       url: https://github.com/p-shapovalov/mgrs_dart.git  
-      ref: e81150914fe3c282ba5011b024407248bdb4bbdc
+      ref: 39bab418595ae3fd4fb2c65099fb97bfbdf805a2
   wkt_parser: 
     git:
       url: https://github.com/p-shapovalov/wkt-parser-dart.git  
