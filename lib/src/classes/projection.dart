@@ -57,10 +57,8 @@ abstract class Projection {
 
   /// Named Projection: a [Projection] can be obtained from the [ProjectionStore] via it's name.
   /// null value will return if Projection not exists in store.
-  factory Projection(String code) {
-    var result = ProjectionStore().get(code)!;
-
-    return result;
+  static Projection? fromCode(String code) {
+    return ProjectionStore().get(code);
   }
 
   /// Creates a Named Projection via [Projection.parse] and registers it to the [ProjectionStore].
@@ -175,15 +173,15 @@ abstract class Projection {
     // Transform source points to long/lat, if they aren't already.
     if (source.projName == 'longlat') {
       point = Point.withZ(
-        x: point.x* consts.D2R,
-        y: point.y* consts.D2R,
+        x: point.x * consts.D2R,
+        y: point.y * consts.D2R,
         z: point.z ?? 0,
       );
     } else {
       if (source.to_meter != null) {
         point = Point.withZ(
-            x: point.x* source.to_meter!,
-            y: point.y* source.to_meter!,
+            x: point.x * source.to_meter!,
+            y: point.y * source.to_meter!,
             z: point.z ?? 0.0);
       }
       point = source.inverse(point)!; // Convert Cartesian to longlat
@@ -197,7 +195,7 @@ abstract class Projection {
     // Adjust for the prime meridian if necessary
     if (dest.from_greenwich != null) {
       point = Point.withZ(
-        x: point.x- dest.from_greenwich!,
+        x: point.x - dest.from_greenwich!,
         y: point.y,
         z: point.z ?? 0.0,
       );
@@ -206,8 +204,8 @@ abstract class Projection {
     if (dest.projName == 'longlat') {
       // convert radians to decimal degrees
       point = Point.withZ(
-        x: point.x* consts.R2D,
-        y: point.y* consts.R2D,
+        x: point.x * consts.R2D,
+        y: point.y * consts.R2D,
         z: point.z ?? 0.0,
       );
     } else {
@@ -215,8 +213,8 @@ abstract class Projection {
       point = dest.forward(point)!;
       if (dest.to_meter != null) {
         point = Point.withZ(
-            x: point.x/ dest.to_meter!,
-            y: point.y/ dest.to_meter!,
+            x: point.x / dest.to_meter!,
+            y: point.y / dest.to_meter!,
             z: point.z ?? 0.0);
       }
     }
